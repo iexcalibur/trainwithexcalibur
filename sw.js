@@ -1,5 +1,5 @@
 /* Training Week PWA — offline-first service worker */
-const CACHE = 'twpwa-v3';
+const CACHE = 'twpwa-v4';
 const ASSETS = [
   './',
   'index.html',

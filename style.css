@@ -290,15 +290,21 @@ h1 { font-size: 30px; font-weight: 800; margin: 2px 0 16px; }
 .bmap .reg.on rect, .bmap .reg.on circle { fill: var(--green); opacity: 0.9; }
 
 .alts { list-style: none; }
-.alts li {
+.alts li { border-bottom: 1px solid var(--line); position: relative; }
+.alts li:last-child { border-bottom: none; }
+.alts li::before { content: '↺'; color: var(--green); position: absolute; left: 0; top: 9px; font-weight: 800; font-size: 13.5px; }
+.alts a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
   color: var(--ink);
   font-size: 13.5px;
+  text-decoration: none;
   padding: 9px 0 9px 18px;
-  border-bottom: 1px solid var(--line);
-  position: relative;
 }
-.alts li:last-child { border-bottom: none; }
-.alts li::before { content: '↺'; color: var(--green); position: absolute; left: 0; font-weight: 800; }
+.alts a:active { opacity: 0.7; }
+.alts .alt-go { font-size: 13px; opacity: 0.75; flex: none; }
 
 .sheet-links { display: flex; gap: 10px; margin: 16px 0 14px; }
 .sheet-links .pill { flex: 1; text-align: center; text-decoration: none; padding: 11px 0; }

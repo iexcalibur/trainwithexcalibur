@@ -402,7 +402,9 @@ function renderSheet() {
 
     ${info.alt.length ? `
       <span class="label sheet-h">Same muscles, other options</span>
-      <ul class="alts">${info.alt.map(a => `<li>${esc(a)}</li>`).join('')}</ul>` : ''}
+      <ul class="alts">${info.alt.map(a => `
+        <li><a href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(a + ' exercise')}"
+               target="_blank" rel="noopener">${esc(a)}<span class="alt-go">🖼</span></a></li>`).join('')}</ul>` : ''}
 
     <div class="sheet-links">
       <a class="pill blue" target="_blank" rel="noopener"
