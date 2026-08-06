@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Training Week — Complete Plan</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="kicker">Five-day gym week · Back-conscious build</span>
+      <h1>Training Week <span>Complete Plan</span></h1>
+    </div>
+    <div class="header-actions">
+      <button id="theme-toggle" class="icon-btn" title="Toggle dark mode" aria-label="Toggle dark mode">
+        <span class="theme-icon-light">☀️</span><span class="theme-icon-dark">🌙</span>
+      </button>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs" aria-label="Pages">
+    <button class="tab active" data-view="overview">Overview</button>
+    <button class="tab" data-view="mon">Mon<span class="tab-sub">Legs</span><span class="tab-bar"><i></i></span></button>
+    <button class="tab" data-view="tue">Tue<span class="tab-sub">Chest</span><span class="tab-bar"><i></i></span></button>
+    <button class="tab" data-view="wed">Wed<span class="tab-sub">Back</span><span class="tab-bar"><i></i></span></button>
+    <button class="tab" data-view="thu">Thu<span class="tab-sub">Shoulders</span><span class="tab-bar"><i></i></span></button>
+    <button class="tab" data-view="fri">Fri<span class="tab-sub">Arms</span><span class="tab-bar"><i></i></span></button>
+    <button class="tab" data-view="guide">Guide</button>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- ======================= OVERVIEW ======================= -->
+  <section class="view active" id="view-overview">
+    <p class="lede">Everything in one place, inside the day it belongs to: lifts, activation, stretching, abs, hip
+    extension, ankle–knee–hip work and fascia. Nothing lives in a separate section — open your day and work
+    top to bottom.</p>
+
+    <h2 class="section-heading">The week at a glance</h2>
+    <div class="table-wrap">
+      <table class="glance">
+        <thead>
+          <tr><th>Day</th><th>Main lifts</th><th>Joint focus</th><th>Hip extension</th><th>Abs</th><th>Fascia</th></tr>
+        </thead>
+        <tbody>
+          <tr data-goto="mon"><td>Mon</td><td>Legs</td><td>Ankle + hip mobility (prep)</td><td>Heavy horizontal</td><td>Anti-extension</td><td>Slow melting stretch</td></tr>
+          <tr data-goto="tue"><td>Tue</td><td>Chest + triceps</td><td><strong>Ankle</strong></td><td>Abduction (light)</td><td>Anti-rotation</td><td>Release + proprioception</td></tr>
+          <tr data-goto="wed"><td>Wed</td><td>Back (V-taper)</td><td><strong>Knee</strong></td><td>—</td><td>Obliques + carries</td><td>Elastic: vertical</td></tr>
+          <tr data-goto="thu"><td>Thu</td><td>Shoulders</td><td><strong>Hip</strong></td><td>Unilateral / steps</td><td>Lower abs</td><td>Long-chain stretch</td></tr>
+          <tr data-goto="fri"><td>Fri</td><td>Arms</td><td>Integration + balance</td><td>Hinge (gated)</td><td>Flexion (gated)</td><td>Elastic: lateral</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Reading the tags</h3>
+        <p class="muted">Every line is tagged so you can see what it is for and what is safe to drop.</p>
+        <ul class="legend">
+          <li><span class="tag tag-hipext">Hip&nbsp;Ext</span> Glute and hip-extension work</li>
+          <li><span class="tag tag-joints">Joints</span> Ankle, knee or hip resilience work</li>
+          <li><span class="tag tag-fascia">Fascia</span> Elastic, long-chain or release work</li>
+          <li><span class="tag tag-optional">Optional</span> Drop first when time is short</li>
+          <li><span class="tag tag-physio">Physio</span> Clear with your physio before loading. Substitutions are on the day.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Two rules that shape everything</h3>
+        <ul class="rules">
+          <li><strong>Before you lift: movement only.</strong> Long static holds before heavy sets temporarily reduce strength.</li>
+          <li><strong>After you lift:</strong> this is where the 30-second holds go.</li>
+        </ul>
+        <h3 class="mt">One joint per day</h3>
+        <p>Ankle, knee and hip each have a full rotation of work. Doing all three every day is roughly 35 extra
+        minutes, which is not sustainable on top of these sessions. One joint per day covers every gap at about
+        12 minutes.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <h4>Be honest about the clock</h4>
+      <p>Full sessions land at <strong>80–95 minutes</strong>. If that does not fit your week, cut the
+      <span class="tag tag-optional">Optional</span> lines first, then the fascia block — not the main lifts and
+      not the joint work. A 60-minute session you actually do beats a 90-minute one you skip.</p>
+    </div>
+
+    <div class="callout callout-warn">
+      <h4>Stop rule</h4>
+      <p>Nothing here should send pain down your leg. If a movement or a stretch does, that is nerve tension, not
+      muscle tightness — stop that item and flag it. Hamstring stretches, deep hip flexion and the banded
+      hip-flexor march are the usual culprits. Anything your physio has prescribed replaces the equivalent item
+      here.</p>
+    </div>
+  </section>
+
+  <!-- ======================= DAYS (rendered by JS) ======================= -->
+  <section class="view" id="view-mon"></section>
+  <section class="view" id="view-tue"></section>
+  <section class="view" id="view-wed"></section>
+  <section class="view" id="view-thu"></section>
+  <section class="view" id="view-fri"></section>
+
+  <!-- ======================= GUIDE ======================= -->
+  <section class="view" id="view-guide">
+    <p class="kicker">Running the plan</p>
+    <h2 class="page-title">Make it keep working</h2>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Progression</h3>
+        <p>Start at the bottom of each rep range. Add reps week to week. When <strong>every set</strong> hits the
+        top of the range with clean form, add the smallest weight jump available and drop back to the bottom.
+        Repeat.</p>
+        <p class="muted small">Example, an 8–12 lift:</p>
+        <pre class="example">Wk 1   10, 9, 8
+Wk 2   11, 10, 9
+Wk 3   12, 12, 12
+Wk 4   +weight → back to 8–10</pre>
+        <h3 class="mt">Joint and fascia work is different</h3>
+        <p>Don't chase load on the <span class="tag tag-joints">Joints</span> and
+        <span class="tag tag-fascia">Fascia</span> lines. Progress those by adding a rep, a few seconds, or better
+        control — tendon and collagen remodel over 6–24 months, not weeks. Consistency beats intensity here.</p>
+        <h3 class="mt">Keep the exercises</h3>
+        <p>Run the same movements for 12–13 weeks. Change one only if it hurts or the equipment is taken. You
+        improve by getting better at a movement, not by collecting new ones.</p>
+        <h3 class="mt">Deload</h3>
+        <p>If performance drops across several sessions and fatigue stays high — or roughly every 6–7 weeks — take
+        one week at half the sets or noticeably lighter loads. It is part of the program, not a failure.</p>
+      </div>
+      <div class="card">
+        <h3>If the week is too big</h3>
+        <p>Cut in this order, across every day:</p>
+        <ol>
+          <li>Every <span class="tag tag-optional">Optional</span> line — saves about 10 min a session</li>
+          <li>The <span class="tag tag-fascia">Fascia</span> block, except the skipping</li>
+          <li>One accessory from the main lift block</li>
+        </ol>
+        <p><strong>Never cut:</strong> the first two main lifts, the joint block for that day, or the cool-down
+        stretches on Monday.</p>
+        <h3 class="mt">Track four things</h3>
+        <ul>
+          <li>Seven-day average body weight — never a single day</li>
+          <li>Waist measurement, once a week</li>
+          <li>Front, side and back photos every 4 weeks — same lighting, time of day, distance</li>
+          <li>Strength on: pulldown, chest-supported row, incline press, leg press, hip thrust</li>
+        </ul>
+        <h3 class="mt">Non-negotiables</h3>
+        <ul>
+          <li><strong>Sleep 7–8 h.</strong> Recovery is where definition is built, and it is what protects your back.</li>
+          <li><strong>Rest days are training.</strong> Never double up two sessions to catch up — push the missed day forward.</li>
+          <li><strong>Don't stack hard cardio next to Monday.</strong> 7,000–10,000 steps a day covers the rest.</li>
+          <li><strong>Waist stays lean.</strong> Skip heavy loaded side bends — they can thicken the waist and work against the V-taper.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout callout-warn">
+      <h4>The gate, once more</h4>
+      <p>Every <span class="tag tag-physio">Physio</span> item is worth having and worth waiting for. Adding them
+      before you are cleared risks the one thing that would actually derail 13 weeks — a flare-up that costs three
+      weeks of consistency.</p>
+    </div>
+
+    <p class="muted small disclaimer">General training information, not individual medical advice. Your physio's
+    phased return plan overrides anything in this document.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <span>Training Week · Complete Plan</span>
+  <button id="reset-all" class="link-btn">Reset all progress</button>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
