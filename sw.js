@@ -1,11 +1,12 @@
 /* Training Week PWA — offline-first service worker */
-const CACHE = 'twpwa-v2';
+const CACHE = 'twpwa-v3';
 const ASSETS = [
   './',
   'index.html',
   'style.css',
   'app.js',
   'plan.js',
+  'exinfo.js',
   'manifest.webmanifest',
   'icons/icon-192.png',
   'icons/icon-512.png',

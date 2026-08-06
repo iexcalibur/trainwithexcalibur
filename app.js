@@ -245,14 +245,16 @@ function dayView(dayId, withBack) {
           const id = exKey(day.id, si, ii);
           const checked = !!progress[id];
           return `
-          <button class="ex ${checked ? 'checked' : ''}" data-toggle="${id}">
-            <span class="check">✓</span>
+          <div class="ex ${checked ? 'checked' : ''}" data-detail="${id}" role="button" tabindex="0"
+               aria-label="${esc(it.name)} details">
+            <button class="check" data-toggle="${id}" aria-label="Mark ${esc(it.name)} done">✓</button>
             <span class="body">
               <span class="name-row"><span class="name">${esc(it.name)}</span>${tagsHtml(it.tags)}</span>
               ${it.note ? `<div class="note">${esc(it.note)}</div>` : ''}
             </span>
             <span class="dose">${it.dose}</span>
-          </button>`;
+            <span class="chev">›</span>
+          </div>`;
         }).join('')}
         ${sec.note ? `<div class="sec-note">${esc(sec.note)}</div>` : ''}
         ${sec.callout ? `<div class="callout"><b>${sec.callout.title}</b><p>${esc(sec.callout.body)}</p></div>` : ''}
@@ -320,6 +322,129 @@ function historyView() {
       }).join('')}`;
 }
 
+/* ---------------- exercise detail sheet ---------------- */
+
+const REGIONS = {
+  front: [
+    ['side-delts', '<circle cx="33" cy="40" r="8"/><circle cx="87" cy="40" r="8"/>'],
+    ['chest', '<rect x="44" y="34" width="32" height="17" rx="7"/>'],
+    ['biceps', '<rect x="23" y="50" width="11" height="24" rx="5"/><rect x="86" y="50" width="11" height="24" rx="5"/>'],
+    ['forearms', '<rect x="21" y="78" width="11" height="26" rx="5"/><rect x="88" y="78" width="11" height="26" rx="5"/>'],
+    ['abs', '<rect x="50" y="54" width="20" height="32" rx="6"/>'],
+    ['obliques', '<rect x="42" y="56" width="7" height="28" rx="3.5"/><rect x="71" y="56" width="7" height="28" rx="3.5"/>'],
+    ['hip-flexors', '<rect x="46" y="89" width="28" height="10" rx="5"/>'],
+    ['adductors', '<rect x="52" y="102" width="7" height="28" rx="3.5"/><rect x="61" y="102" width="7" height="28" rx="3.5"/>'],
+    ['quads', '<rect x="39" y="102" width="12" height="40" rx="6"/><rect x="69" y="102" width="12" height="40" rx="6"/>'],
+    ['tibialis', '<rect x="42" y="150" width="9" height="34" rx="4.5"/><rect x="69" y="150" width="9" height="34" rx="4.5"/>'],
+  ],
+  back: [
+    ['traps', '<rect x="47" y="26" width="26" height="12" rx="6"/>'],
+    ['rear-delts', '<circle cx="33" cy="40" r="8"/><circle cx="87" cy="40" r="8"/>'],
+    ['upper-back', '<rect x="46" y="40" width="28" height="13" rx="6"/>'],
+    ['lats', '<rect x="41" y="55" width="13" height="28" rx="6"/><rect x="66" y="55" width="13" height="28" rx="6"/>'],
+    ['triceps', '<rect x="23" y="50" width="11" height="24" rx="5"/><rect x="86" y="50" width="11" height="24" rx="5"/>'],
+    ['lower-back', '<rect x="50" y="85" width="20" height="12" rx="6"/>'],
+    ['glutes', '<rect x="44" y="99" width="15" height="17" rx="7"/><rect x="61" y="99" width="15" height="17" rx="7"/>'],
+    ['hamstrings', '<rect x="39" y="119" width="12" height="36" rx="6"/><rect x="69" y="119" width="12" height="36" rx="6"/>'],
+    ['calves', '<rect x="42" y="158" width="9" height="30" rx="4.5"/><rect x="69" y="158" width="9" height="30" rx="4.5"/>'],
+  ],
+};
+
+function bodyMap(keys) {
+  const act = new Set(keys.map(k => REGION_ALIAS[k] || k));
+  const svg = side => `
+    <svg viewBox="0 0 120 195" class="bmap" aria-hidden="true">
+      <circle cx="60" cy="12" r="9" class="sil"/>
+      <rect x="53" y="21" width="14" height="8" rx="3" class="sil"/>
+      <rect x="46" y="86" width="28" height="14" rx="6" class="sil"/>
+      ${REGIONS[side].map(([k, sh]) => `<g class="reg ${act.has(k) ? 'on' : ''}">${sh}</g>`).join('')}
+    </svg>`;
+  return `
+    <div class="bmap-wrap">
+      <div>${svg('front')}<span class="label">Front</span></div>
+      <div>${svg('back')}<span class="label">Back</span></div>
+    </div>`;
+}
+
+let sheetId = null;
+
+function renderSheet() {
+  const backdrop = $('#sheet-backdrop');
+  const sheet = $('#sheet');
+  if (!sheetId) {
+    backdrop.hidden = true;
+    sheet.hidden = true;
+    document.body.style.overflow = '';
+    return;
+  }
+  const [dayId, si, ii] = sheetId.split('-');
+  const day = PLAN.find(d => d.id === dayId);
+  const sec = day.sections[+si];
+  const it = sec.items[+ii];
+  const info = exinfoFor(it.name, sec.tag);
+  const checked = !!progress[sheetId];
+  const q = encodeURIComponent(it.name + ' exercise');
+
+  sheet.innerHTML = `
+    <div class="sheet-grab"></div>
+    <button class="sheet-close" data-sheet-close aria-label="Close">✕</button>
+    <span class="label">${day.name} · ${sec.title}</span>
+    <h2 class="sheet-name">${esc(it.name)}</h2>
+    <div class="sheet-meta">
+      <span class="sheet-dose">${it.dose}</span>
+      ${tagsHtml(it.tags)}
+    </div>
+    ${it.note ? `<p class="sheet-note">${esc(it.note)}</p>` : ''}
+
+    <span class="label sheet-h">Targets</span>
+    <div class="chips">${info.m.map(k => `<span class="chip">${MUSCLES[k] || k}</span>`).join('')}</div>
+    ${bodyMap(info.m)}
+
+    ${info.alt.length ? `
+      <span class="label sheet-h">Same muscles, other options</span>
+      <ul class="alts">${info.alt.map(a => `<li>${esc(a)}</li>`).join('')}</ul>` : ''}
+
+    <div class="sheet-links">
+      <a class="pill blue" target="_blank" rel="noopener"
+         href="https://www.youtube.com/results?search_query=${q}+form">▶ Watch tutorial</a>
+      <a class="pill gray" target="_blank" rel="noopener"
+         href="https://www.google.com/search?tbm=isch&q=${q}">🖼 See images</a>
+    </div>
+
+    <button class="pill ${checked ? 'gray' : 'green'} sheet-toggle" data-sheet-toggle>
+      ${checked ? '✓ Done — tap to undo' : 'Mark as done'}
+    </button>`;
+  backdrop.hidden = false;
+  sheet.hidden = false;
+  requestAnimationFrame(() => { backdrop.classList.add('open'); sheet.classList.add('open'); });
+  document.body.style.overflow = 'hidden';
+}
+
+function openSheet(id) {
+  sheetId = id;
+  renderSheet();
+}
+
+function closeSheet() {
+  $('#sheet-backdrop').classList.remove('open');
+  $('#sheet').classList.remove('open');
+  sheetId = null;
+  setTimeout(renderSheet, 180);
+}
+
+$('#sheet-backdrop').addEventListener('click', closeSheet);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && sheetId) closeSheet(); });
+$('#sheet').addEventListener('click', e => {
+  if (e.target.closest('[data-sheet-close]')) return closeSheet();
+  if (e.target.closest('[data-sheet-toggle]')) {
+    if (progress[sheetId]) delete progress[sheetId]; else progress[sheetId] = true;
+    saveProgress();
+    buzz(10);
+    render();
+    renderSheet();
+  }
+});
+
 /* Consecutive training days; weekends don't break the chain. */
 function computeStreak(dates) {
   if (!dates.length) return 0;
@@ -383,6 +508,8 @@ $('#view').addEventListener('click', e => {
     buzz(10);
     return render();
   }
+  const detail = e.target.closest('[data-detail]');
+  if (detail) return openSheet(detail.dataset.detail);
   const col = e.target.closest('[data-collapse]');
   if (col) {
     collapsed[col.dataset.collapse] = !collapsed[col.dataset.collapse];
