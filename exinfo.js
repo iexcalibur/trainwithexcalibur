@@ -142,6 +142,39 @@ const EXINFO = {
   'Foam roll lats, quads, calves': { m: ['lats', 'quads', 'calves'], alt: ['Massage-gun pass, light', 'Stick roller', 'Lacrosse-ball targeted spots'] },
 };
 
+/* ---------------- Sakshi · Phase 2 (Upper/Lower split) ---------------- */
+Object.assign(EXINFO, {
+  'Easy cardio — treadmill, cycle or cross-trainer': { m: ['cardio'], alt: ['Treadmill walk', 'Stationary cycle', 'Cross-trainer'] },
+  'Cat-cow · arm circles · leg swings': { m: ['mobility', 't-spine', 'hips'], alt: ["World's greatest stretch", 'Hip circles', 'Band dislocates'] },
+  "Bodyweight squats · world's greatest stretch": { m: ['mobility', 'quads', 'hips'], alt: ['Walking lunge with overhead reach', 'Tempo air squats', 'Deep squat hold'] },
+  'Band pull-aparts · scapular push-ups · shoulder dislocates': { m: ['rear-delts', 'upper-back', 'rotator-cuff'], alt: ['Light face pulls', 'Wall slides', 'Prone Y-raises'] },
+  'Glute bridges · clamshells · ankle circles': { m: ['glutes', 'glute-med', 'ankle'], alt: ['Banded glute bridges', 'Monster walks', 'Fire hydrants'] },
+  'Chest press, dumbbell or machine': { m: ['chest', 'triceps'], alt: ['Incline push-up', 'Machine chest press', 'Floor press'] },
+  'Lat pulldown': { m: ['lats', 'biceps'], alt: ['Assisted pull-up', 'Close-grip pulldown', 'Band pulldown'] },
+  'Seated shoulder press': { m: ['side-delts', 'front-delts', 'triceps'], alt: ['Machine shoulder press', 'Landmine press', 'Standing dumbbell press, light'] },
+  'Seated row': { m: ['upper-back', 'lats', 'biceps'], alt: ['Chest-supported row', 'Single-arm cable row', 'Band row'] },
+  'Bicep curl': { m: ['biceps'], alt: ['Hammer curl', 'Cable curl', 'Incline dumbbell curl'] },
+  'Triceps pushdown': { m: ['triceps'], alt: ['Rope pushdown', 'Overhead triceps extension', 'Bench dips'] },
+  'Goblet or dumbbell squat': { m: ['quads', 'glutes'], alt: ['Leg press', 'Box squat', 'Wall sit'] },
+  'Walking lunge': { m: ['quads', 'glutes', 'balance'], alt: ['Reverse lunge', 'Split squat', 'Step-up'] },
+  'Calf raise': { m: ['calves'], alt: ['Standing calf raise machine', 'Seated calf raise', 'Single-leg calf raise'] },
+  'Cable crunch or hanging knee raise': { m: ['abs', 'lower-abs'], alt: ['Reverse crunch', 'Dead bug', 'Machine crunch'] },
+  'Incline chest press': { m: ['upper-chest', 'triceps'], alt: ['Incline dumbbell press', 'Incline push-up', 'Low-to-high cable fly'] },
+  'Assisted pull-up or close-grip pulldown': { m: ['lats', 'biceps'], alt: ['Band-assisted pull-up', 'Neutral-grip pulldown', 'Inverted row'] },
+  'Face pull or rear-delt fly': { m: ['rear-delts', 'upper-back'], alt: ['Reverse pec deck', 'Band pull-apart', 'Bent-over rear delt fly'] },
+  'Bulgarian split squat or leg press': { m: ['quads', 'glutes'], alt: ['Reverse lunge', 'Static split squat', 'Step-up'] },
+  'Leg curl, seated or lying': { m: ['hamstrings'], alt: ['Light Romanian deadlift', 'Slider leg curl', 'Nordic curl negatives'] },
+  'Standing calf raise': { m: ['calves'], alt: ['Seated calf raise', 'Single-leg calf raise', 'Donkey calf raise'] },
+  'Side plank': { m: ['obliques', 'core'], alt: ['Knee-bent side plank', 'Cable lateral hold', 'Suitcase carry'] },
+  'Easy walk to bring heart rate down': { m: ['cardio'], alt: ['Slow cycle', 'Slow cross-trainer'] },
+  'Chest / doorway stretch': { m: ['chest'], alt: ['Floor pec stretch', 'Wall pec stretch'] },
+  'Cross-body shoulder stretch': { m: ['rear-delts'], alt: ['Thread-the-needle stretch', 'Sleeper stretch, gentle'] },
+  "Child's pose": { m: ['lats', 'lower-back'], alt: ["Child's pose with side reach", 'Cat-cow, slow'] },
+  'Hamstring stretch, standing or seated': { m: ['hamstrings'], alt: ['Seated forward fold, gentle', 'Standing heel-on-bench stretch'] },
+  'Figure-4 glute stretch': { m: ['glutes'], alt: ['Pigeon stretch', 'Seated figure-4'] },
+  'Calf stretch against a wall': { m: ['calves'], alt: ['Downward-dog calf pedals', 'Heel drop hold off a step'] },
+});
+
 /* Fallback when a name is missing from EXINFO. */
 function exinfoFor(name, sectionTag) {
   if (EXINFO[name]) return EXINFO[name];

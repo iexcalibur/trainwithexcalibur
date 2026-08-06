@@ -13,10 +13,46 @@ const TAGS = {
 };
 
 const K = {
-  progress: wk => `twpwa:progress:${wk}`,
-  sessions: 'twpwa:sessions',
-  active: 'twpwa:active',
+  profile: 'twpwa:profile',
+  progress: (p, wk) => `twpwa:${p}:progress:${wk}`,
+  sessions: p => `twpwa:${p}:sessions`,
+  active: p => `twpwa:${p}:active`,
 };
+
+const PROFILES = {
+  shubham: {
+    name: 'Shubham',
+    tagline: 'Five-day gym week · back-conscious build',
+    color: 'var(--green)',
+    plan: () => PLAN,
+    rules: [
+      { color: 'var(--amber)', label: 'Stop rule', text: 'Nothing here should send pain down your leg. If a movement or a stretch does, that is nerve tension, not muscle tightness — stop that item and flag it. Anything your physio has prescribed replaces the equivalent item here.' },
+      { color: 'var(--blue)', label: 'Be honest about the clock', text: 'Full sessions land at 80–95 minutes. If that does not fit, cut the OPTIONAL lines first, then the fascia block — not the main lifts and not the joint work. A 60-minute session you actually do beats a 90-minute one you skip.' },
+    ],
+  },
+  sakshi: {
+    name: 'Sakshi',
+    tagline: 'Beginner to toned · Phase 2 build (weeks 5–12)',
+    color: 'var(--purple)',
+    plan: () => SAKSHI_PLAN,
+    rules: [
+      { color: 'var(--green)', label: 'Progressive overload', text: 'Each week, do a little more than last week — one more rep, or slightly more weight, with good form. When every set hits the top of the rep range cleanly, add the smallest increment next session.' },
+      { color: 'var(--amber)', label: 'Go lighter than you think', text: 'Form first — leave 1–2 reps in the tank, no ego-lifting. Muscle soreness early on is normal; sharp or joint pain is not — stop if it shows up. Rest days are part of the plan.' },
+      { color: 'var(--blue)', label: 'Cardio · 2× a week', text: 'One steady session: 20–30 min incline walk, cycle or cross-trainer. One intervals session: 20 min of 1 min brisk / 2 min easy — start with 4–5 rounds and build up. Plus ~7–8k steps daily.' },
+    ],
+  },
+};
+
+/* One-time migration: pre-profile keys belong to Shubham. */
+(function migrateLegacyKeys() {
+  for (const k of Object.keys(localStorage)) {
+    const m = k.match(/^twpwa:(progress:.+|sessions|active)$/);
+    if (!m) continue;
+    const nk = `twpwa:shubham:${m[1]}`;
+    if (!localStorage.getItem(nk)) localStorage.setItem(nk, localStorage.getItem(k));
+    localStorage.removeItem(k);
+  }
+})();
 
 /* ---------------- state ---------------- */
 
@@ -36,19 +72,33 @@ function load(key, fallback) {
   catch { return fallback; }
 }
 
-let progress = load(K.progress(weekKey), {});
-let sessions = load(K.sessions, []);
-let active = load(K.active, null); // {dayId, startedAt|null, accumSec}
+let profile = localStorage.getItem(K.profile); // null → show login
+if (profile && !PROFILES[profile]) profile = null;
+
+let plan = [];
+let progress = {};
+let sessions = [];
+let active = null;                 // {dayId, startedAt|null, accumSec}
 let rest = null;                   // {end, len} — runtime only
 
-let view = { name: 'week' };       // {name:'week'} | {name:'day', dayId, from} | {name:'history'}
+let view = { name: profile ? 'week' : 'login' };
 let collapsed = {};                // sectionKey -> true
 
-const saveProgress = () => localStorage.setItem(K.progress(weekKey), JSON.stringify(progress));
-const saveSessions = () => localStorage.setItem(K.sessions, JSON.stringify(sessions));
+function loadProfileState() {
+  plan = PROFILES[profile].plan();
+  progress = load(K.progress(profile, weekKey), {});
+  sessions = load(K.sessions(profile), []);
+  active = load(K.active(profile), null);
+  rest = null;
+  collapsed = {};
+}
+if (profile) loadProfileState();
+
+const saveProgress = () => localStorage.setItem(K.progress(profile, weekKey), JSON.stringify(progress));
+const saveSessions = () => localStorage.setItem(K.sessions(profile), JSON.stringify(sessions));
 const saveActive = () => active
-  ? localStorage.setItem(K.active, JSON.stringify(active))
-  : localStorage.removeItem(K.active);
+  ? localStorage.setItem(K.active(profile), JSON.stringify(active))
+  : localStorage.removeItem(K.active(profile));
 
 const dayTotal = d => d.sections.reduce((n, s) => n + s.items.length, 0);
 const dayDone = id => Object.keys(progress).filter(k => k.startsWith(id + '-')).length;
@@ -58,7 +108,7 @@ const elapsedSec = () => !active ? 0
 
 function todayDayId() {
   const id = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][new Date().getDay()];
-  return PLAN.some(d => d.id === id) ? id : 'mon';
+  return plan.some(d => d.id === id) ? id : plan[0].id;
 }
 
 /* ---------------- tiny helpers ---------------- */
@@ -105,8 +155,27 @@ function beep() {
 
 /* ---------------- views ---------------- */
 
+function loginView() {
+  return `
+    <div class="login">
+      <span class="label">Training week</span>
+      <h1>Who's training?</h1>
+      ${Object.entries(PROFILES).map(([id, p]) => `
+        <button class="card profile-card" data-profile="${id}">
+          <span class="avatar" style="background:${p.color}">${p.name[0]}</span>
+          <span class="p-body">
+            <span class="p-name">${p.name}</span>
+            <span class="p-sub">${p.tagline}</span>
+          </span>
+          <span class="chev">›</span>
+        </button>`).join('')}
+      <p class="login-note">Progress, sessions and history are saved separately for each profile on this device.</p>
+    </div>`;
+}
+
 function weekView() {
-  const totals = PLAN.map(d => ({ d, total: dayTotal(d), done: dayDone(d.id) }));
+  const p = PROFILES[profile];
+  const totals = plan.map(d => ({ d, total: dayTotal(d), done: dayDone(d.id) }));
   const weekTotal = totals.reduce((n, t) => n + t.total, 0);
   const weekDone = Object.keys(progress).length;
   const pct = weekTotal ? weekDone / weekTotal : 0;
@@ -116,10 +185,16 @@ function weekView() {
   const today = todayDayId();
 
   return `
-    <span class="label">Training week</span>
-    <h1>Overview</h1>
+    <div class="ov-head">
+      <div>
+        <span class="label">${p.tagline}</span>
+        <h1>Overview</h1>
+      </div>
+      <button class="avatar avatar-btn" data-act="switch-profile" style="background:${p.color}"
+              aria-label="Switch profile">${p.name[0]}</button>
+    </div>
     <div class="card hero">
-      <div class="hero-stat"><b>${sessionsThisWeek}<span class="dim">/5</span></b><span class="label">Sessions</span></div>
+      <div class="hero-stat"><b>${sessionsThisWeek}<span class="dim">/${plan.length}</span></b><span class="label">Sessions</span></div>
       ${ring(148, 13, pct, 'var(--green)',
         `<span><span class="ring-pct">${Math.round(pct * 100)}%</span><br><span class="label ring-sub">Week</span></span>`)}
       <div class="hero-stat"><b>${weekDone}<span class="dim">/${weekTotal}</span></b><span class="label">Exercises</span></div>
@@ -150,22 +225,15 @@ function weekView() {
         </div>
         <div class="bar"><i style="width:${total ? (done / total) * 100 : 0}%"></i></div>
       </button>`).join('')}
+    ${p.rules.map(r => `
     <div class="card rule-card">
-      <span class="label" style="color:var(--amber)">Stop rule</span>
-      <p>Nothing here should send pain down your leg. If a movement or a stretch does, that is nerve tension,
-      not muscle tightness — stop that item and flag it. Anything your physio has prescribed replaces the
-      equivalent item here.</p>
-    </div>
-    <div class="card rule-card">
-      <span class="label" style="color:var(--blue)">Be honest about the clock</span>
-      <p>Full sessions land at 80–95 minutes. If that does not fit, cut the OPTIONAL lines first, then the
-      fascia block — not the main lifts and not the joint work. A 60-minute session you actually do beats a
-      90-minute one you skip.</p>
-    </div>`;
+      <span class="label" style="color:${r.color}">${r.label}</span>
+      <p>${r.text}</p>
+    </div>`).join('')}`;
 }
 
 function dayView(dayId, withBack) {
-  const day = PLAN.find(d => d.id === dayId);
+  const day = plan.find(d => d.id === dayId);
   const total = dayTotal(day), done = dayDone(day.id);
   const here = active && active.dayId === day.id;
   const running = here && active.startedAt !== null;
@@ -215,7 +283,7 @@ function dayView(dayId, withBack) {
       </div>
       <div class="progress"><i id="session-bar" class="${over ? 'over' : ''}" style="width:${tp * 100}%"></i></div>
       ${active && !here ? `<p class="sec-note" style="border:none;padding:10px 0 0">
-        A session is running on ${PLAN.find(d => d.id === active.dayId)?.name ?? '?'} — end it there first.</p>` : ''}
+        A session is running on ${plan.find(d => d.id === active.dayId)?.name ?? '?'} — end it there first.</p>` : ''}
     </div>
 
     <div class="card rest-card">
@@ -277,19 +345,27 @@ function historyView() {
     const wk = isoWeekKey(new Date(s.date + 'T12:00:00'));
     byWeek.set(wk, (byWeek.get(wk) ?? 0) + 1);
   }
+  const cap = plan.length;
   const weeks = [];
   const d = new Date();
   for (let i = 0; i < 8; i++) {
-    weeks.unshift({ wk: isoWeekKey(d), count: Math.min(5, byWeek.get(isoWeekKey(d)) ?? 0) });
+    weeks.unshift({ wk: isoWeekKey(d), count: Math.min(cap, byWeek.get(isoWeekKey(d)) ?? 0) });
     d.setDate(d.getDate() - 7);
   }
 
+  const p = PROFILES[profile];
   return `
-    <span class="label">Training week</span>
-    <h1>History</h1>
+    <div class="ov-head">
+      <div>
+        <span class="label">${p.name} · Training history</span>
+        <h1>History</h1>
+      </div>
+      <button class="avatar avatar-btn" data-act="switch-profile" style="background:${p.color}"
+              aria-label="Switch profile">${p.name[0]}</button>
+    </div>
     <div class="stat-row">
       <div class="card stat"><b>${streak}</b><span class="label">Day streak</span></div>
-      <div class="card stat"><b>${thisWeek.length}<span class="dim">/5</span></b><span class="label">This week</span></div>
+      <div class="card stat"><b>${thisWeek.length}<span class="dim">/${plan.length}</span></b><span class="label">This week</span></div>
       <div class="card stat"><b>${Math.round(totalTime / 360) / 10}<span class="dim">h</span></b><span class="label">Total time</span></div>
     </div>
     <div class="card chart-card">
@@ -297,7 +373,7 @@ function historyView() {
       <div class="chart">
         ${weeks.map(({ wk, count }) => `
           <div class="chart-col">
-            <div class="chart-bar"><i class="${count >= 5 ? 'full' : ''}" style="height:${(count / 5) * 100}%"></i></div>
+            <div class="chart-bar"><i class="${count >= cap ? 'full' : ''}" style="height:${(count / cap) * 100}%"></i></div>
             <span class="chart-tick">${wk.slice(-2)}</span>
           </div>`).join('')}
       </div>
@@ -306,7 +382,7 @@ function historyView() {
     ${sessions.length === 0
       ? `<div class="card empty">No sessions yet. Open a day and hit Start — ending the session logs it here.</div>`
       : sessions.map(s => {
-        const day = PLAN.find(d => d.id === s.dayId);
+        const day = plan.find(d => d.id === s.dayId);
         const pct = s.total ? Math.round((s.done / s.total) * 100) : 0;
         return `
         <div class="card session-row">
@@ -378,7 +454,7 @@ function renderSheet() {
     return;
   }
   const [dayId, si, ii] = sheetId.split('-');
-  const day = PLAN.find(d => d.id === dayId);
+  const day = plan.find(d => d.id === dayId);
   const sec = day.sections[+si];
   const it = sec.items[+ii];
   const info = exinfoFor(it.name, sec.tag);
@@ -471,7 +547,9 @@ function computeStreak(dates) {
 
 function render() {
   const main = $('#view');
-  if (view.name === 'week') main.innerHTML = weekView();
+  document.getElementById('nav').style.display = view.name === 'login' ? 'none' : 'flex';
+  if (view.name === 'login') main.innerHTML = loginView();
+  else if (view.name === 'week') main.innerHTML = weekView();
   else if (view.name === 'day') main.innerHTML = dayView(view.dayId, view.from === 'week');
   else main.innerHTML = historyView();
 
@@ -496,6 +574,15 @@ document.getElementById('nav').addEventListener('click', e => {
 });
 
 $('#view').addEventListener('click', e => {
+  const prof = e.target.closest('[data-profile]');
+  if (prof) {
+    profile = prof.dataset.profile;
+    localStorage.setItem(K.profile, profile);
+    loadProfileState();
+    view = { name: 'week' };
+    window.scrollTo(0, 0);
+    return render();
+  }
   const open = e.target.closest('[data-open-day]');
   if (open) {
     view = { name: 'day', dayId: open.dataset.openDay, from: 'week' };
@@ -525,8 +612,11 @@ $('#view').addEventListener('click', e => {
   }
   const act = e.target.closest('[data-act]');
   if (!act) return;
-  const day = view.name === 'day' ? PLAN.find(d => d.id === view.dayId) : null;
+  const day = view.name === 'day' ? plan.find(d => d.id === view.dayId) : null;
   switch (act.dataset.act) {
+    case 'switch-profile':
+      view = { name: 'login' };
+      break;
     case 'back':
       view = { name: 'week' };
       break;
