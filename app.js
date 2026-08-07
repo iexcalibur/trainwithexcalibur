@@ -406,7 +406,7 @@ let demoTimer = null;
 function startDemoLoop() {
   stopDemoLoop();
   const stage = $('.demo-stage');
-  if (!stage) return;
+  if (!stage || stage.classList.contains('demo-video')) return; // video loops itself
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   demoTimer = setInterval(() => stage.classList.toggle('b'), 800);
 }
@@ -418,6 +418,20 @@ function stopDemoLoop() {
 function demoHtml(name) {
   const demo = demoFor(name);
   if (!demo) return '';
+
+  if (demo.kind === 'video') {
+    return `
+      <span class="label sheet-h">How it looks</span>
+      <div class="demo">
+        <div class="demo-stage demo-video">
+          <iframe src="${demo.src}" title="${esc(name)} demonstration" loading="lazy"
+                  allow="autoplay; encrypted-media; picture-in-picture"
+                  referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        <span class="demo-cap">Muted loop · <a href="${demo.watch}" target="_blank" rel="noopener">${esc(demo.title)}</a></span>
+      </div>`;
+  }
+
   return `
     <span class="label sheet-h">How it looks</span>
     <div class="demo">

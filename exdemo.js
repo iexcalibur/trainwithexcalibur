@@ -134,8 +134,39 @@ const DEMOS = {
   "Wrist flexor stretch": {"d":"Kneeling_Forearm_Stretch","t":"Kneeling Forearm Stretch"},
 };
 
+/* ------------------------------------------------------------
+   Video demos for the movements the photo dataset doesn't cover
+   (rehab / mobility / tendon work). Each id was verified via the
+   YouTube oEmbed API — it exists, the title matches the movement,
+   and it is embeddable. Played muted and looped, so it behaves
+   like the silent clips above; unmute with the player controls.
+   ------------------------------------------------------------ */
+const VIDEOS = {
+  '90/90 hip rotation switches': { v: 'qq_Z7sAmVrA', t: '90/90 Hip Switch — Simone Sports Performance' },
+  'Band curls · band pushdowns': { v: 'Da57AuIofvU', t: 'Resistance Band Bicep Curl — Fitness Freedom Athletes' },
+  'Banded eversion and inversion': { v: 'VyeqglvCwdE', t: 'Theraband Inversion and Eversion — Jeffrey B. Witty, M.D.' },
+  'Banded terminal knee extension': { v: '7xG3MeoLjC0', t: 'Banded Terminal Knee Extension (TKE) — Tim Trevail' },
+  'Copenhagen plank, knee on a bench': { v: 'GOijKtXza9M', t: 'Copenhagen Plank on a Bench — Revival Performance PT' },
+  'Knee-to-wall ankle rock': { v: 'Y1IZXkdPPdw', t: 'Knee to Wall Ankle Mobility Drill — Nick Brattain' },
+  'Knee-to-wall dorsiflexion': { v: 'pSMPd12mrg0', t: 'Knee to Wall Dorsiflexion — The Physiobot' },
+  'Lateral step-down': { v: 'AQ1kCW6DOKM', t: 'Lateral Step Down — ATLASTHETICS' },
+  'Overhead dumbbell march': { v: 'SBnTGJUKkkM', t: 'Dumbbell Overhead March — Garage Fitness Girl' },
+  'Reverse Nordic curl, shallow range': { v: 'BnlPIJ3d-ck', t: 'Reverse Nordic (Beginner to Advanced) — Sports Rehab Expert' },
+  'Slow step-down from a low box, 3s lower': { v: 'Or4C-UQ63Xc', t: 'Eccentric Single-Leg Step Down — Dr. Carl Baird' },
+  'Spanish squat isometric, heavy band behind the knees': { v: 'mik90mAS6fU', t: 'Spanish Squats for Patellar Tendinopathy — The Knee Resource' },
+  'Tibialis raise, back to a wall, toes up': { v: 'VzIcGAgBiaM', t: 'Tibialis Wall Raises — The Barefoot Sprinter' },
+};
+
 function demoFor(name) {
   const e = DEMOS[name];
-  if (!e) return null;
-  return { frames: [DEMO_BASE + e.d + '/0.jpg', DEMO_BASE + e.d + '/1.jpg'], title: e.t };
+  if (e) return { kind: 'frames', frames: [DEMO_BASE + e.d + '/0.jpg', DEMO_BASE + e.d + '/1.jpg'], title: e.t };
+  const v = VIDEOS[name];
+  if (v) {
+    const p = new URLSearchParams({
+      autoplay: '1', mute: '1', loop: '1', playlist: v.v,
+      controls: '1', modestbranding: '1', rel: '0', playsinline: '1',
+    });
+    return { kind: 'video', src: `https://www.youtube-nocookie.com/embed/${v.v}?${p}`, watch: `https://www.youtube.com/watch?v=${v.v}`, title: v.t };
+  }
+  return null;
 }
