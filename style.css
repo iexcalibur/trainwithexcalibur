@@ -315,13 +315,28 @@ h1 { font-size: 30px; font-weight: 800; margin: 2px 0 16px; }
   border: 1px solid var(--line);
 }
 
-.bmap-wrap { display: flex; justify-content: center; gap: 26px; margin: 14px 0 4px; }
-.bmap-wrap > div { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.bmap-wrap {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin: 14px 0 4px;
+  background: var(--surface-map, rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 10px 10px;
+}
+.bmap-wrap > div { display: flex; flex-direction: column; align-items: center; gap: 6px; }
 .bmap-wrap .label { font-size: 9px; }
-.bmap { width: 96px; height: auto; }
-.bmap .sil { fill: var(--card2); }
-.bmap .reg rect, .bmap .reg circle { fill: var(--card2); }
-.bmap .reg.on rect, .bmap .reg.on circle { fill: var(--green); opacity: 0.9; }
+.bmap { height: auto; }
+
+/* body outline */
+.bmap .sil path { fill: #2B333D; }
+/* resting muscle */
+.bmap .reg path { fill: #3D4854; stroke: #212932; stroke-width: 1; stroke-linejoin: round; }
+/* worked muscle */
+.bmap .reg.on path { fill: var(--green); stroke: #0F1A15; }
+/* head, joints, hands, feet */
+.bmap .detail { fill: #2B333D; }
 
 .alts { list-style: none; }
 .alts li { border-bottom: 1px solid var(--line); position: relative; }

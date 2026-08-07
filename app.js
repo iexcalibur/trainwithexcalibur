@@ -400,48 +400,6 @@ function historyView() {
 
 /* ---------------- exercise detail sheet ---------------- */
 
-const REGIONS = {
-  front: [
-    ['side-delts', '<circle cx="33" cy="40" r="8"/><circle cx="87" cy="40" r="8"/>'],
-    ['chest', '<rect x="44" y="34" width="32" height="17" rx="7"/>'],
-    ['biceps', '<rect x="23" y="50" width="11" height="24" rx="5"/><rect x="86" y="50" width="11" height="24" rx="5"/>'],
-    ['forearms', '<rect x="21" y="78" width="11" height="26" rx="5"/><rect x="88" y="78" width="11" height="26" rx="5"/>'],
-    ['abs', '<rect x="50" y="54" width="20" height="32" rx="6"/>'],
-    ['obliques', '<rect x="42" y="56" width="7" height="28" rx="3.5"/><rect x="71" y="56" width="7" height="28" rx="3.5"/>'],
-    ['hip-flexors', '<rect x="46" y="89" width="28" height="10" rx="5"/>'],
-    ['adductors', '<rect x="52" y="102" width="7" height="28" rx="3.5"/><rect x="61" y="102" width="7" height="28" rx="3.5"/>'],
-    ['quads', '<rect x="39" y="102" width="12" height="40" rx="6"/><rect x="69" y="102" width="12" height="40" rx="6"/>'],
-    ['tibialis', '<rect x="42" y="150" width="9" height="34" rx="4.5"/><rect x="69" y="150" width="9" height="34" rx="4.5"/>'],
-  ],
-  back: [
-    ['traps', '<rect x="47" y="26" width="26" height="12" rx="6"/>'],
-    ['rear-delts', '<circle cx="33" cy="40" r="8"/><circle cx="87" cy="40" r="8"/>'],
-    ['upper-back', '<rect x="46" y="40" width="28" height="13" rx="6"/>'],
-    ['lats', '<rect x="41" y="55" width="13" height="28" rx="6"/><rect x="66" y="55" width="13" height="28" rx="6"/>'],
-    ['triceps', '<rect x="23" y="50" width="11" height="24" rx="5"/><rect x="86" y="50" width="11" height="24" rx="5"/>'],
-    ['lower-back', '<rect x="50" y="85" width="20" height="12" rx="6"/>'],
-    ['glutes', '<rect x="44" y="99" width="15" height="17" rx="7"/><rect x="61" y="99" width="15" height="17" rx="7"/>'],
-    ['hamstrings', '<rect x="39" y="119" width="12" height="36" rx="6"/><rect x="69" y="119" width="12" height="36" rx="6"/>'],
-    ['calves', '<rect x="42" y="158" width="9" height="30" rx="4.5"/><rect x="69" y="158" width="9" height="30" rx="4.5"/>'],
-  ],
-};
-
-function bodyMap(keys) {
-  const act = new Set(keys.map(k => REGION_ALIAS[k] || k));
-  const svg = side => `
-    <svg viewBox="0 0 120 195" class="bmap" aria-hidden="true">
-      <circle cx="60" cy="12" r="9" class="sil"/>
-      <rect x="53" y="21" width="14" height="8" rx="3" class="sil"/>
-      <rect x="46" y="86" width="28" height="14" rx="6" class="sil"/>
-      ${REGIONS[side].map(([k, sh]) => `<g class="reg ${act.has(k) ? 'on' : ''}">${sh}</g>`).join('')}
-    </svg>`;
-  return `
-    <div class="bmap-wrap">
-      <div>${svg('front')}<span class="label">Front</span></div>
-      <div>${svg('back')}<span class="label">Back</span></div>
-    </div>`;
-}
-
 let sheetId = null;
 
 function renderSheet() {

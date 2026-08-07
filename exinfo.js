@@ -18,12 +18,7 @@ const MUSCLES = {
   grip: 'Grip', wrists: 'Wrists',
 };
 
-/* Muscle keys that light regions on the body map (others show as chips only). */
-const REGION_ALIAS = {
-  'upper-chest': 'chest', 'glute-med': 'glutes', 'lower-abs': 'abs',
-  core: 'abs', achilles: 'calves', knee: 'quads', 'front-delts': 'side-delts',
-  'plantar-fascia': 'calves', hips: 'glutes',
-};
+/* Body-map region mapping lives in bodymodel.js (REGION_ALIAS). */
 
 const EXINFO = {
   /* ---------------- shared prep / warm-up ---------------- */
