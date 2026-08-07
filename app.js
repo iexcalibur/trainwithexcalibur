@@ -368,6 +368,7 @@ function historyView() {
       <div class="card stat"><b>${thisWeek.length}<span class="dim">/${plan.length}</span></b><span class="label">This week</span></div>
       <div class="card stat"><b>${Math.round(totalTime / 360) / 10}<span class="dim">h</span></b><span class="label">Total time</span></div>
     </div>
+    ${heatmapHtml()}
     <div class="card chart-card">
       <span class="label">Sessions per week · last 8</span>
       <div class="chart">
@@ -527,6 +528,87 @@ $('#sheet').addEventListener('click', e => {
   }
 });
 
+/* ---------------- training heatmap (GitHub-style) ---------------- */
+
+const HEAT_WEEKS = 26;
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const DAY_ABBR = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+const isoOf = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+/* 0 = rest day, 1–4 by how much of the session was completed. */
+function heatLevel(pct) {
+  if (pct <= 0) return 0;
+  if (pct < 0.5) return 1;
+  if (pct < 0.75) return 2;
+  if (pct < 1) return 3;
+  return 4;
+}
+
+function heatmapHtml() {
+  const byDate = new Map();
+  for (const s of sessions) {
+    const cur = byDate.get(s.date) || { pct: 0, dur: 0, n: 0, days: [] };
+    cur.pct = Math.max(cur.pct, s.total ? s.done / s.total : 0);
+    cur.dur += s.durationSec;
+    cur.n++;
+    const day = plan.find(d => d.id === s.dayId);
+    cur.days.push(day ? day.focus : s.dayId);
+    byDate.set(s.date, cur);
+  }
+
+  const today = new Date();
+  today.setHours(12, 0, 0, 0);
+  const todayIso = isoOf(today);
+  const mondayIdx = (today.getDay() + 6) % 7;          // 0 = Monday
+  const start = new Date(today);
+  start.setDate(today.getDate() - mondayIdx - (HEAT_WEEKS - 1) * 7);
+
+  const cells = [];
+  const months = [];
+  let lastMonth = -1;
+
+  for (let w = 0; w < HEAT_WEEKS; w++) {
+    const colStart = new Date(start);
+    colStart.setDate(start.getDate() + w * 7);
+    const m = colStart.getMonth();
+    months.push(m !== lastMonth ? MONTHS[m] : '');
+    lastMonth = m;
+
+    for (let d = 0; d < 7; d++) {
+      const cur = new Date(start);
+      cur.setDate(start.getDate() + w * 7 + d);
+      const iso = isoOf(cur);
+      const future = iso > todayIso;
+      const hit = byDate.get(iso);
+      const lvl = hit ? heatLevel(hit.pct) : 0;
+      const label = hit
+        ? `${iso} · ${hit.days.join(', ')} · ${Math.round(hit.pct * 100)}% · ${fmtClock(hit.dur)}`
+        : `${iso} · rest`;
+      cells.push(`<i class="hc l${lvl}${future ? ' future' : ''}${iso === todayIso ? ' today' : ''}"
+        style="grid-row:${d + 1}" data-heat="${esc(label)}" title="${esc(label)}"></i>`);
+    }
+  }
+
+  return `
+    <div class="card heat-card">
+      <span class="label">Training heatmap · last ${HEAT_WEEKS} weeks</span>
+      <div class="heat-scroll">
+        <div class="heat-inner">
+          <div class="heat-months">${months.map(m => `<span>${m}</span>`).join('')}</div>
+          <div class="heat-row">
+            <div class="heat-days">${DAY_ABBR.map((d, i) => `<span>${i % 2 === 0 ? d : ''}</span>`).join('')}</div>
+            <div class="heat-cells">${cells.join('')}</div>
+          </div>
+        </div>
+      </div>
+      <div class="heat-foot">
+        <span id="heat-detail" class="heat-detail">Tap a square for that day</span>
+        <span class="heat-legend">Less ${[0, 1, 2, 3, 4].map(l => `<i class="hc l${l}"></i>`).join('')} More</span>
+      </div>
+    </div>`;
+}
+
 /* Consecutive training days; weekends don't break the chain. */
 function computeStreak(dates) {
   if (!dates.length) return 0;
@@ -556,6 +638,10 @@ function render() {
   else if (view.name === 'week') main.innerHTML = weekView();
   else if (view.name === 'day') main.innerHTML = dayView(view.dayId, view.from === 'week');
   else main.innerHTML = historyView();
+
+  /* Heatmap opens showing the most recent weeks. */
+  const heatScroll = $('.heat-scroll');
+  if (heatScroll) heatScroll.scrollLeft = heatScroll.scrollWidth;
 
   document.querySelectorAll('.bottom-nav button').forEach(b => {
     const key = b.dataset.nav;
@@ -603,6 +689,14 @@ $('#view').addEventListener('click', e => {
   }
   const detail = e.target.closest('[data-detail]');
   if (detail) return openSheet(detail.dataset.detail);
+  const heat = e.target.closest('[data-heat]');
+  if (heat) {
+    const out = $('#heat-detail');
+    if (out) out.textContent = heat.dataset.heat;
+    document.querySelectorAll('.hc.sel').forEach(c => c.classList.remove('sel'));
+    heat.classList.add('sel');
+    return;
+  }
   const col = e.target.closest('[data-collapse]');
   if (col) {
     collapsed[col.dataset.collapse] = !collapsed[col.dataset.collapse];
