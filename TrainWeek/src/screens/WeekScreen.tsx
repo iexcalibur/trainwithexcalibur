@@ -1,15 +1,15 @@
 import React from 'react';
 import { ScrollView, View, Text, Pressable, StyleSheet } from 'react-native';
-import { PLAN, dayTotal } from '../data/plan';
+import { dayTotal } from '../data/plan';
 import { useStore } from '../store';
 import Ring from '../components/Ring';
 import { Card, Label } from '../components/ui';
 import { C } from '../theme';
 
-export default function WeekScreen({ openDay }: { openDay: (id: string) => void }) {
-  const { progress, dayDone, sessions, weekKey } = useStore();
+export default function WeekScreen({ openDay, onSwitchProfile }: { openDay: (id: string) => void; onSwitchProfile: () => void }) {
+  const { progress, dayDone, sessions, weekKey, plan, profile } = useStore();
 
-  const totals = PLAN.map(d => ({ day: d, total: dayTotal(d), done: dayDone(d.id) }));
+  const totals = plan.map(d => ({ day: d, total: dayTotal(d), done: dayDone(d.id) }));
   const weekTotal = totals.reduce((n, t) => n + t.total, 0);
   const weekDone = Object.keys(progress).length;
   const weekPct = weekTotal ? weekDone / weekTotal : 0;
@@ -21,13 +21,23 @@ export default function WeekScreen({ openDay }: { openDay: (id: string) => void 
 
   return (
     <ScrollView style={styles.root} contentContainerStyle={styles.content}>
-      <Label>Training week</Label>
-      <Text style={styles.h1}>Overview</Text>
+      <View style={styles.ovHead}>
+        <View style={{ flex: 1 }}>
+          <Label>{profile?.tagline ?? 'Training week'}</Label>
+          <Text style={styles.h1}>Overview</Text>
+        </View>
+        <Pressable
+          style={[styles.avatar, { backgroundColor: profile?.color ?? C.green }]}
+          onPress={onSwitchProfile}
+        >
+          <Text style={styles.avatarText}>{profile?.name?.[0] ?? '?'}</Text>
+        </Pressable>
+      </View>
 
       <Card style={styles.heroCard}>
         <View style={styles.heroRow}>
           <View style={styles.heroStat}>
-            <Text style={styles.heroStatNum}>{sessionsThisWeek}<Text style={styles.heroStatDim}>/5</Text></Text>
+            <Text style={styles.heroStatNum}>{sessionsThisWeek}<Text style={styles.heroStatDim}>/{plan.length}</Text></Text>
             <Label style={styles.heroStatLabel}>Sessions</Label>
           </View>
           <Ring size={148} stroke={13} progress={weekPct} color={C.green}>
@@ -78,22 +88,12 @@ export default function WeekScreen({ openDay }: { openDay: (id: string) => void 
         </Pressable>
       ))}
 
-      <Card style={styles.ruleCard}>
-        <Label style={{ color: C.amber }}>Stop rule</Label>
-        <Text style={styles.ruleText}>
-          Nothing here should send pain down your leg. If a movement or a stretch does, that is nerve
-          tension, not muscle tightness — stop that item and flag it. Anything your physio has prescribed
-          replaces the equivalent item here.
-        </Text>
-      </Card>
-      <Card style={[styles.ruleCard, { marginBottom: 24 }]}>
-        <Label style={{ color: C.blue }}>Be honest about the clock</Label>
-        <Text style={styles.ruleText}>
-          Full sessions land at 80–95 minutes. If that does not fit, cut the OPTIONAL lines first, then
-          the fascia block — not the main lifts and not the joint work. A 60-minute session you actually
-          do beats a 90-minute one you skip.
-        </Text>
-      </Card>
+      {(profile?.rules ?? []).map((r, i) => (
+        <Card key={i} style={[styles.ruleCard, i === (profile!.rules.length - 1) && { marginBottom: 24 }]}>
+          <Label style={{ color: r.color }}>{r.label}</Label>
+          <Text style={styles.ruleText}>{r.text}</Text>
+        </Card>
+      ))}
     </ScrollView>
   );
 }
@@ -110,6 +110,9 @@ function isoWeekOf(isoDate: string): string {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: C.bg },
+  ovHead: { flexDirection: 'row', alignItems: 'flex-start', gap: 12 },
+  avatar: { width: 38, height: 38, borderRadius: 19, alignItems: 'center', justifyContent: 'center', marginTop: 4 },
+  avatarText: { color: '#08110D', fontSize: 15, fontWeight: '900' },
   content: { padding: 20, paddingBottom: 40 },
   h1: { color: C.ink, fontSize: 30, fontWeight: '800', marginTop: 2, marginBottom: 16 },
   heroCard: { paddingVertical: 22 },

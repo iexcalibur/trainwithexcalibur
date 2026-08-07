@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ScrollView, View, Text, Pressable, StyleSheet, Alert } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { PLAN, dayTotal, exId, Section } from '../data/plan';
+import { dayTotal, exId, Section } from '../data/plan';
 import { useStore, elapsedSec } from '../store';
 import Ring from '../components/Ring';
 import { Card, Label, Tag, fmtClock } from '../components/ui';
@@ -10,7 +10,8 @@ import { C } from '../theme';
 const REST_PRESETS = [60, 90, 120];
 
 export default function DayScreen({ dayId, goBack }: { dayId: string; goBack?: () => void }) {
-  const day = PLAN.find(d => d.id === dayId)!;
+  const { plan } = useStore();
+  const day = plan.find(d => d.id === dayId)!;
   const store = useStore();
   const { progress, toggle, resetDay, active, startSession, pauseSession, resumeSession, endSession } = store;
 
@@ -117,7 +118,7 @@ export default function DayScreen({ dayId, goBack }: { dayId: string; goBack?: (
           </View>
           {active && active.dayId !== day.id && (
             <Text style={styles.otherSession}>
-              A session is running on {PLAN.find(d => d.id === active.dayId)?.name ?? active.dayId} — end it there first.
+              A session is running on {plan.find(d => d.id === active.dayId)?.name ?? active.dayId} — end it there first.
             </Text>
           )}
         </Card>

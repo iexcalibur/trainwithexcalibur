@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react';
 import { ScrollView, View, Text, StyleSheet } from 'react-native';
-import { PLAN } from '../data/plan';
+
 import { useStore, isoWeekKey } from '../store';
 import { Card, Label, fmtClock } from '../components/ui';
 import { C } from '../theme';
 
 export default function HistoryScreen() {
-  const { sessions, weekKey } = useStore();
+  const { sessions, weekKey, plan, profile } = useStore();
 
   const streak = useMemo(() => computeStreak(sessions.map(s => s.date)), [sessions]);
   const thisWeek = sessions.filter(s => isoWeekOf(s.date) === weekKey);
@@ -18,19 +18,22 @@ export default function HistoryScreen() {
       const wk = isoWeekOf(s.date);
       m.set(wk, (m.get(wk) ?? 0) + 1);
     }
+    const cap = plan.length || 5;
     const weeks: { wk: string; count: number }[] = [];
     const d = new Date();
     for (let i = 0; i < 8; i++) {
       const wk = isoWeekKey(d);
-      weeks.unshift({ wk, count: Math.min(5, m.get(wk) ?? 0) });
+      weeks.unshift({ wk, count: Math.min(cap, m.get(wk) ?? 0) });
       d.setDate(d.getDate() - 7);
     }
     return weeks;
-  }, [sessions]);
+  }, [sessions, plan.length]);
+
+  const cap = plan.length || 5;
 
   return (
     <ScrollView style={styles.root} contentContainerStyle={styles.content}>
-      <Label>Training week</Label>
+      <Label>{profile ? profile.name + ' · Training history' : 'Training history'}</Label>
       <Text style={styles.h1}>History</Text>
 
       <View style={styles.statRow}>
@@ -39,7 +42,7 @@ export default function HistoryScreen() {
           <Label style={styles.statLabel}>Day streak</Label>
         </Card>
         <Card style={styles.stat}>
-          <Text style={styles.statNum}>{thisWeek.length}<Text style={styles.statDim}>/5</Text></Text>
+          <Text style={styles.statNum}>{thisWeek.length}<Text style={styles.statDim}>/{plan.length}</Text></Text>
           <Label style={styles.statLabel}>This week</Label>
         </Card>
         <Card style={styles.stat}>
@@ -55,8 +58,8 @@ export default function HistoryScreen() {
             <View key={wk} style={styles.chartCol}>
               <View style={styles.chartBarTrack}>
                 <View style={[styles.chartBarFill, {
-                  height: `${(count / 5) * 100}%`,
-                  backgroundColor: count >= 5 ? C.green : C.blue,
+                  height: `${(count / cap) * 100}%`,
+                  backgroundColor: count >= cap ? C.green : C.blue,
                 }]} />
               </View>
               <Text style={styles.chartTick}>{wk.slice(-2)}</Text>
@@ -70,7 +73,7 @@ export default function HistoryScreen() {
         <Card><Text style={styles.empty}>No sessions yet. Open a day and hit Start — ending the session logs it here.</Text></Card>
       )}
       {sessions.map((s, i) => {
-        const day = PLAN.find(d => d.id === s.dayId);
+        const day = plan.find(d => d.id === s.dayId);
         const pct = s.total ? Math.round((s.done / s.total) * 100) : 0;
         return (
           <Card key={i} style={styles.session}>

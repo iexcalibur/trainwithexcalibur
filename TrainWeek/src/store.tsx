@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { PLAN, dayTotal } from './data/plan';
+import { Day, dayTotal } from './data/plan';
+import { Profile, PROFILES, profileById } from './profiles';
 
 export interface Session {
   dayId: string;
@@ -19,6 +20,10 @@ export interface ActiveSession {
 interface StoreValue {
   ready: boolean;
   weekKey: string;
+  profile: Profile | null;
+  plan: Day[];
+  selectProfile: (id: string) => void;
+  signOut: () => void;
   progress: Record<string, boolean>;
   toggle: (id: string) => void;
   resetDay: (dayId: string) => void;
@@ -48,48 +53,111 @@ export function elapsedSec(a: ActiveSession | null): number {
   return Math.floor(a.accumSec + (a.startedAt ? (Date.now() - a.startedAt) / 1000 : 0));
 }
 
-const K_SESSIONS = 'tw:sessions';
-const K_ACTIVE = 'tw:active';
-const progressKey = (wk: string) => `tw:progress:${wk}`;
+/* ------------------------------------------------------------------
+   Storage keys. Everything below the profile is namespaced per user,
+   so two people share a device without ever touching each other's
+   data. AsyncStorage lives in the app's own sandbox: it survives app
+   restarts and OS updates, is included in device backups, and is only
+   removed when the app itself is deleted.
+   ------------------------------------------------------------------ */
+const K_PROFILE = 'ra:profile';
+const kSessions = (p: string) => `ra:${p}:sessions`;
+const kActive = (p: string) => `ra:${p}:active`;
+const kProgress = (p: string, wk: string) => `ra:${p}:progress:${wk}`;
+
+/* Pre-profile builds stored everything under tw:* — hand it to Shubham. */
+async function migrateLegacy() {
+  try {
+    const keys = await AsyncStorage.getAllKeys();
+    const legacy = keys.filter(k => /^tw:(progress:.+|sessions|active)$/.test(k));
+    if (!legacy.length) return;
+    const pairs = await AsyncStorage.multiGet(legacy);
+    const targets = legacy.map(k => k.replace(/^tw:/, 'ra:shubham:'));
+    const existing = new Set(
+      (await AsyncStorage.multiGet(targets))
+        .filter(([, v]) => v != null)
+        .map(([k]) => k)
+    );
+    const moved: [string, string][] = [];
+    for (const [k, v] of pairs) {
+      if (v == null) continue;
+      const target = k.replace(/^tw:/, 'ra:shubham:');
+      if (existing.has(target)) continue;   // never clobber newer data
+      moved.push([target, v]);
+    }
+    if (moved.length) await AsyncStorage.multiSet(moved);
+    await AsyncStorage.multiRemove(legacy);
+  } catch {}
+}
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const weekKey = isoWeekKey(new Date());
   const [ready, setReady] = useState(false);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [progress, setProgress] = useState<Record<string, boolean>>({});
   const [sessions, setSessions] = useState<Session[]>([]);
   const [active, setActive] = useState<ActiveSession | null>(null);
 
+  const plan = profile?.plan ?? [];
+
+  /* Load a profile's data set. */
+  const loadFor = useCallback(async (p: Profile) => {
+    try {
+      const [pr, se, ac] = await AsyncStorage.multiGet([
+        kProgress(p.id, weekKey),
+        kSessions(p.id),
+        kActive(p.id),
+      ]);
+      setProgress(pr[1] ? JSON.parse(pr[1]) : {});
+      setSessions(se[1] ? JSON.parse(se[1]) : []);
+      setActive(ac[1] ? JSON.parse(ac[1]) : null);
+    } catch {
+      setProgress({}); setSessions([]); setActive(null);
+    }
+  }, [weekKey]);
+
   useEffect(() => {
     (async () => {
+      await migrateLegacy();
       try {
-        const [p, s, a] = await Promise.all([
-          AsyncStorage.getItem(progressKey(weekKey)),
-          AsyncStorage.getItem(K_SESSIONS),
-          AsyncStorage.getItem(K_ACTIVE),
-        ]);
-        if (p) setProgress(JSON.parse(p));
-        if (s) setSessions(JSON.parse(s));
-        if (a) setActive(JSON.parse(a));
+        const id = await AsyncStorage.getItem(K_PROFILE);
+        const p = profileById(id);
+        if (p) { setProfile(p); await loadFor(p); }
       } catch {}
       setReady(true);
     })();
-  }, [weekKey]);
+  }, [loadFor]);
+
+  const selectProfile = useCallback((id: string) => {
+    const p = profileById(id);
+    if (!p) return;
+    setProfile(p);
+    AsyncStorage.setItem(K_PROFILE, id).catch(() => {});
+    loadFor(p);
+  }, [loadFor]);
+
+  const signOut = useCallback(() => {
+    setProfile(null);
+    setProgress({}); setSessions([]); setActive(null);
+    AsyncStorage.removeItem(K_PROFILE).catch(() => {});
+  }, []);
 
   const saveProgress = useCallback((next: Record<string, boolean>) => {
     setProgress(next);
-    AsyncStorage.setItem(progressKey(weekKey), JSON.stringify(next)).catch(() => {});
-  }, [weekKey]);
+    if (profile) AsyncStorage.setItem(kProgress(profile.id, weekKey), JSON.stringify(next)).catch(() => {});
+  }, [profile, weekKey]);
 
   const saveSessions = useCallback((next: Session[]) => {
     setSessions(next);
-    AsyncStorage.setItem(K_SESSIONS, JSON.stringify(next)).catch(() => {});
-  }, []);
+    if (profile) AsyncStorage.setItem(kSessions(profile.id), JSON.stringify(next)).catch(() => {});
+  }, [profile]);
 
   const saveActive = useCallback((next: ActiveSession | null) => {
     setActive(next);
-    if (next) AsyncStorage.setItem(K_ACTIVE, JSON.stringify(next)).catch(() => {});
-    else AsyncStorage.removeItem(K_ACTIVE).catch(() => {});
-  }, []);
+    if (!profile) return;
+    if (next) AsyncStorage.setItem(kActive(profile.id), JSON.stringify(next)).catch(() => {});
+    else AsyncStorage.removeItem(kActive(profile.id)).catch(() => {});
+  }, [profile]);
 
   const toggle = useCallback((id: string) => {
     const next = { ...progress };
@@ -126,24 +194,24 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const endSession = useCallback(() => {
     if (!active) return;
-    const day = PLAN.find(d => d.id === active.dayId);
-    const total = day ? dayTotal(day) : 0;
+    const day = plan.find(d => d.id === active.dayId);
     const rec: Session = {
       dayId: active.dayId,
       date: new Date().toISOString().slice(0, 10),
       durationSec: elapsedSec(active),
       done: dayDone(active.dayId),
-      total,
+      total: day ? dayTotal(day) : 0,
     };
     saveSessions([rec, ...sessions]);
     saveActive(null);
-  }, [active, sessions, dayDone, saveSessions, saveActive]);
+  }, [active, sessions, plan, dayDone, saveSessions, saveActive]);
 
   const discardSession = useCallback(() => saveActive(null), [saveActive]);
 
   return (
     <Store.Provider value={{
-      ready, weekKey, progress, toggle, resetDay, dayDone,
+      ready, weekKey, profile, plan, selectProfile, signOut,
+      progress, toggle, resetDay, dayDone,
       sessions, active, startSession, pauseSession, resumeSession, endSession, discardSession,
     }}>
       {children}
@@ -156,3 +224,5 @@ export function useStore(): StoreValue {
   if (!v) throw new Error('useStore outside provider');
   return v;
 }
+
+export { PROFILES };

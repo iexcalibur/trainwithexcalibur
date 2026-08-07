@@ -3,6 +3,7 @@ import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { StoreProvider, useStore } from './src/store';
+import LoginScreen from './src/screens/LoginScreen';
 import WeekScreen from './src/screens/WeekScreen';
 import DayScreen from './src/screens/DayScreen';
 import HistoryScreen from './src/screens/HistoryScreen';
@@ -10,24 +11,34 @@ import { C } from './src/theme';
 
 type Tab = 'week' | 'today' | 'history';
 
-function todayDayId(): string {
-  const id = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][new Date().getDay()];
-  return ['mon', 'tue', 'wed', 'thu', 'fri'].includes(id) ? id : 'mon';
-}
-
 function Root() {
-  const { ready, active } = useStore();
+  const { ready, active, profile, plan, signOut } = useStore();
   const insets = useSafeAreaInsets();
   const [tab, setTab] = useState<Tab>('week');
   const [openedDay, setOpenedDay] = useState<string | null>(null);
 
   if (!ready) return <View style={styles.root} />;
 
+  /* No profile chosen yet — ask who's training. */
+  if (!profile) {
+    return (
+      <SafeAreaView style={styles.root} edges={['top']}>
+        <StatusBar style="light" />
+        <LoginScreen />
+      </SafeAreaView>
+    );
+  }
+
+  const todayDayId = () => {
+    const id = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][new Date().getDay()];
+    return plan.some(d => d.id === id) ? id : plan[0].id;
+  };
+
   let content: React.ReactNode;
   if (openedDay) {
     content = <DayScreen dayId={openedDay} goBack={() => setOpenedDay(null)} />;
   } else if (tab === 'week') {
-    content = <WeekScreen openDay={setOpenedDay} />;
+    content = <WeekScreen openDay={setOpenedDay} onSwitchProfile={signOut} />;
   } else if (tab === 'today') {
     content = <DayScreen dayId={todayDayId()} />;
   } else {
