@@ -4,6 +4,7 @@ import { ScrollView, View, Text, StyleSheet } from 'react-native';
 import { useStore, isoWeekKey } from '../store';
 import { Card, Label, fmtClock } from '../components/ui';
 import { C } from '../theme';
+import Heatmap from '../components/Heatmap';
 
 export default function HistoryScreen() {
   const { sessions, weekKey, plan, profile } = useStore();
@@ -50,6 +51,8 @@ export default function HistoryScreen() {
           <Label style={styles.statLabel}>Total time</Label>
         </Card>
       </View>
+
+      <Heatmap sessions={sessions} plan={plan} />
 
       <Card style={styles.chartCard}>
         <Label style={{ marginBottom: 14 }}>Sessions per week · last 8</Label>

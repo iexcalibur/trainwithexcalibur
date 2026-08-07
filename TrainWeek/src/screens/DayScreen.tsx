@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ScrollView, View, Text, Pressable, StyleSheet, Alert } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { dayTotal, exId, Section } from '../data/plan';
+import { dayTotal, exId, Section, Exercise, TagKey } from '../data/plan';
 import { useStore, elapsedSec } from '../store';
 import Ring from '../components/Ring';
 import { Card, Label, Tag, fmtClock } from '../components/ui';
 import { C } from '../theme';
+import ExerciseSheet from '../components/ExerciseSheet';
 
 const REST_PRESETS = [60, 90, 120];
 
@@ -25,6 +26,7 @@ export default function DayScreen({ dayId, goBack }: { dayId: string; goBack?: (
   const [now, setNow] = useState(Date.now());
   const [restEnd, setRestEnd] = useState<number | null>(null);
   const [restLen, setRestLen] = useState(90);
+  const [sheet, setSheet] = useState<{ ex: Exercise; section: string; tag?: TagKey; id: string } | null>(null);
   const sessionRunning = active?.dayId === day.id && active.startedAt !== null;
   const sessionHere = active?.dayId === day.id;
   const needsTick = sessionRunning || restEnd !== null;
@@ -149,7 +151,8 @@ export default function DayScreen({ dayId, goBack }: { dayId: string; goBack?: (
         </Card>
 
         {day.sections.map((sec, si) => (
-          <SectionCard key={si} day={day.id} sec={sec} si={si} progress={progress} onToggle={onToggle} />
+          <SectionCard key={si} day={day.id} sec={sec} si={si} progress={progress} onToggle={onToggle}
+            onOpen={(ex, id) => setSheet({ ex, section: sec.title, tag: sec.tag, id })} />
         ))}
 
         <Card style={styles.cutCard}>
@@ -157,12 +160,24 @@ export default function DayScreen({ dayId, goBack }: { dayId: string; goBack?: (
           <Text style={styles.cutText}>{day.cut}</Text>
         </Card>
       </ScrollView>
+
+      <ExerciseSheet
+        visible={sheet !== null}
+        exercise={sheet?.ex ?? null}
+        dayName={day.name}
+        sectionTitle={sheet?.section ?? ''}
+        sectionTag={sheet?.tag}
+        checked={sheet ? !!progress[sheet.id] : false}
+        onToggle={() => sheet && onToggle(sheet.id)}
+        onClose={() => setSheet(null)}
+      />
     </View>
   );
 }
 
-function SectionCard({ day, sec, si, progress, onToggle }:
-  { day: string; sec: Section; si: number; progress: Record<string, boolean>; onToggle: (id: string) => void }) {
+function SectionCard({ day, sec, si, progress, onToggle, onOpen }:
+  { day: string; sec: Section; si: number; progress: Record<string, boolean>;
+    onToggle: (id: string) => void; onOpen: (ex: Exercise, id: string) => void }) {
   const [open, setOpen] = useState(true);
   const done = sec.items.filter((_, ii) => progress[exId(day, si, ii)]).length;
   return (
@@ -184,10 +199,14 @@ function SectionCard({ day, sec, si, progress, onToggle }:
         const id = exId(day, si, ii);
         const checked = !!progress[id];
         return (
-          <Pressable key={ii} style={styles.ex} onPress={() => onToggle(id)}>
-            <View style={[styles.check, checked && styles.checkOn]}>
+          <Pressable key={ii} style={styles.ex} onPress={() => onOpen(it, id)}>
+            <Pressable
+              onPress={() => onToggle(id)}
+              hitSlop={10}
+              style={[styles.check, checked && styles.checkOn]}
+            >
               {checked && <Text style={styles.checkMark}>✓</Text>}
-            </View>
+            </Pressable>
             <View style={{ flex: 1 }}>
               <View style={styles.exNameRow}>
                 <Text style={[styles.exName, checked && styles.exDone]}>{it.name}</Text>
@@ -196,6 +215,7 @@ function SectionCard({ day, sec, si, progress, onToggle }:
               {it.note && <Text style={[styles.exNote, checked && { opacity: 0.5 }]}>{it.note}</Text>}
             </View>
             <Text style={[styles.exDose, checked && styles.exDone]}>{it.dose}</Text>
+            <Text style={styles.exChev}>›</Text>
           </Pressable>
         );
       })}
@@ -261,6 +281,7 @@ const styles = StyleSheet.create({
   exNote: { color: C.muted, fontSize: 12, marginTop: 2, lineHeight: 17 },
   exDose: { color: C.blue, fontSize: 12, fontWeight: '700', fontVariant: ['tabular-nums'], maxWidth: 96, textAlign: 'right' },
   exDone: { textDecorationLine: 'line-through', opacity: 0.45 },
+  exChev: { color: C.faint, fontSize: 18, fontWeight: '700', marginLeft: 2 },
   secNote: { color: C.faint, fontSize: 12, lineHeight: 17, padding: 14, paddingTop: 10, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.line },
   callout: { margin: 14, marginTop: 10, padding: 12, borderRadius: 10, backgroundColor: '#241F12', borderLeftWidth: 3, borderLeftColor: C.amber },
   calloutTitle: { color: C.amber, fontSize: 10.5, fontWeight: '800', letterSpacing: 1, marginBottom: 4 },
