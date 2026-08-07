@@ -400,12 +400,42 @@ function historyView() {
 
 /* ---------------- exercise detail sheet ---------------- */
 
+/* Silent looping demo: two frames (start ⇄ end) swapped on a timer. */
+let demoTimer = null;
+
+function startDemoLoop() {
+  stopDemoLoop();
+  const stage = $('.demo-stage');
+  if (!stage) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  demoTimer = setInterval(() => stage.classList.toggle('b'), 800);
+}
+
+function stopDemoLoop() {
+  if (demoTimer) { clearInterval(demoTimer); demoTimer = null; }
+}
+
+function demoHtml(name) {
+  const demo = demoFor(name);
+  if (!demo) return '';
+  return `
+    <span class="label sheet-h">How it looks</span>
+    <div class="demo">
+      <div class="demo-stage">
+        <img class="demo-frame f0" src="${demo.frames[0]}" alt="${esc(name)} — start position" loading="lazy">
+        <img class="demo-frame f1" src="${demo.frames[1]}" alt="${esc(name)} — end position" loading="lazy">
+      </div>
+      <span class="demo-cap">Silent loop · ${esc(demo.title)}</span>
+    </div>`;
+}
+
 let sheetId = null;
 
 function renderSheet() {
   const backdrop = $('#sheet-backdrop');
   const sheet = $('#sheet');
   if (!sheetId) {
+    stopDemoLoop();
     backdrop.hidden = true;
     sheet.hidden = true;
     document.body.style.overflow = '';
@@ -433,6 +463,7 @@ function renderSheet() {
     <span class="label sheet-h">Targets</span>
     <div class="chips">${info.m.map(k => `<span class="chip">${MUSCLES[k] || k}</span>`).join('')}</div>
     ${bodyMap(info.m)}
+    ${demoHtml(it.name)}
 
     ${info.alt.length ? `
       <span class="label sheet-h">Same muscles, other options</span>
@@ -454,6 +485,7 @@ function renderSheet() {
   sheet.hidden = false;
   requestAnimationFrame(() => { backdrop.classList.add('open'); sheet.classList.add('open'); });
   document.body.style.overflow = 'hidden';
+  startDemoLoop();
 }
 
 function openSheet(id) {

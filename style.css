@@ -338,6 +338,33 @@ h1 { font-size: 30px; font-weight: 800; margin: 2px 0 16px; }
 /* head, joints, hands, feet */
 .bmap .detail { fill: #2B333D; }
 
+/* ---------- silent demo loop ---------- */
+.demo { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.demo-stage {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 4 / 3;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+.demo-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* f1 (end position) sits over f0 (start); JS toggles .b to swap them. */
+.demo-frame.f1 { opacity: 0; transition: opacity 0.12s linear; }
+.demo-stage.b .demo-frame.f1 { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .demo-frame.f1 { transition: none; }
+}
+.demo-cap { color: var(--faint); font-size: 10.5px; letter-spacing: 0.04em; }
+
 .alts { list-style: none; }
 .alts li { border-bottom: 1px solid var(--line); position: relative; }
 .alts li:last-child { border-bottom: none; }
