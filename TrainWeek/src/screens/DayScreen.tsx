@@ -14,7 +14,7 @@ export default function DayScreen({ dayId, goBack }: { dayId: string; goBack?: (
   const { plan } = useStore();
   const day = plan.find(d => d.id === dayId)!;
   const store = useStore();
-  const { progress, toggle, resetDay, active, startSession, pauseSession, resumeSession, endSession } = store;
+  const { progress, toggle, resetDay, active, startSession, pauseSession, resumeSession, endSession, swaps, setSwap } = store;
 
   const total = dayTotal(day);
   const done = useMemo(
@@ -151,7 +151,7 @@ export default function DayScreen({ dayId, goBack }: { dayId: string; goBack?: (
         </Card>
 
         {day.sections.map((sec, si) => (
-          <SectionCard key={si} day={day.id} sec={sec} si={si} progress={progress} onToggle={onToggle}
+          <SectionCard key={si} day={day.id} sec={sec} si={si} progress={progress} swaps={swaps} onToggle={onToggle}
             onOpen={(ex, id) => setSheet({ ex, section: sec.title, tag: sec.tag, id })} />
         ))}
 
@@ -168,6 +168,8 @@ export default function DayScreen({ dayId, goBack }: { dayId: string; goBack?: (
         sectionTitle={sheet?.section ?? ''}
         sectionTag={sheet?.tag}
         checked={sheet ? !!progress[sheet.id] : false}
+        swappedName={sheet ? swaps[sheet.id] ?? null : null}
+        onSwap={alt => sheet && setSwap(sheet.id, alt)}
         onToggle={() => sheet && onToggle(sheet.id)}
         onClose={() => setSheet(null)}
       />
@@ -175,8 +177,9 @@ export default function DayScreen({ dayId, goBack }: { dayId: string; goBack?: (
   );
 }
 
-function SectionCard({ day, sec, si, progress, onToggle, onOpen }:
+function SectionCard({ day, sec, si, progress, swaps, onToggle, onOpen }:
   { day: string; sec: Section; si: number; progress: Record<string, boolean>;
+    swaps: Record<string, string>;
     onToggle: (id: string) => void; onOpen: (ex: Exercise, id: string) => void }) {
   const [open, setOpen] = useState(true);
   const done = sec.items.filter((_, ii) => progress[exId(day, si, ii)]).length;
@@ -209,10 +212,12 @@ function SectionCard({ day, sec, si, progress, onToggle, onOpen }:
             </Pressable>
             <View style={{ flex: 1 }}>
               <View style={styles.exNameRow}>
-                <Text style={[styles.exName, checked && styles.exDone]}>{it.name}</Text>
-                {it.tags?.map(t => <Tag key={t} k={t} />)}
+                <Text style={[styles.exName, checked && styles.exDone]}>{swaps[id] ?? it.name}</Text>
+                {!swaps[id] && it.tags?.map(t => <Tag key={t} k={t} />)}
               </View>
-              {it.note && <Text style={[styles.exNote, checked && { opacity: 0.5 }]}>{it.note}</Text>}
+              {swaps[id]
+                ? <Text style={[styles.exNote, styles.swapNote, checked && { opacity: 0.5 }]}>⇄ Swapped in for {it.name}</Text>
+                : it.note ? <Text style={[styles.exNote, checked && { opacity: 0.5 }]}>{it.note}</Text> : null}
             </View>
             <Text style={[styles.exDose, checked && styles.exDone]}>{it.dose}</Text>
             <Text style={styles.exChev}>›</Text>
@@ -282,6 +287,7 @@ const styles = StyleSheet.create({
   exDose: { color: C.blue, fontSize: 12, fontWeight: '700', fontVariant: ['tabular-nums'], maxWidth: 96, textAlign: 'right' },
   exDone: { textDecorationLine: 'line-through', opacity: 0.45 },
   exChev: { color: C.faint, fontSize: 18, fontWeight: '700', marginLeft: 2 },
+  swapNote: { color: C.green },
   secNote: { color: C.faint, fontSize: 12, lineHeight: 17, padding: 14, paddingTop: 10, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: C.line },
   callout: { margin: 14, marginTop: 10, padding: 12, borderRadius: 10, backgroundColor: '#241F12', borderLeftWidth: 3, borderLeftColor: C.amber },
   calloutTitle: { color: C.amber, fontSize: 10.5, fontWeight: '800', letterSpacing: 1, marginBottom: 4 },

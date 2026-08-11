@@ -29,6 +29,8 @@ interface StoreValue {
   resetDay: (dayId: string) => void;
   dayDone: (dayId: string) => number;
   sessions: Session[];
+  swaps: Record<string, string>;
+  setSwap: (id: string, alt: string | null) => void;
   active: ActiveSession | null;
   startSession: (dayId: string) => void;
   pauseSession: () => void;
@@ -64,6 +66,7 @@ const K_PROFILE = 'ra:profile';
 const kSessions = (p: string) => `ra:${p}:sessions`;
 const kActive = (p: string) => `ra:${p}:active`;
 const kProgress = (p: string, wk: string) => `ra:${p}:progress:${wk}`;
+const kSwaps = (p: string) => `ra:${p}:swaps`;
 
 /* Pre-profile builds stored everything under tw:* — hand it to Shubham. */
 async function migrateLegacy() {
@@ -96,6 +99,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [progress, setProgress] = useState<Record<string, boolean>>({});
   const [sessions, setSessions] = useState<Session[]>([]);
+  const [swaps, setSwaps] = useState<Record<string, string>>({});
   const [active, setActive] = useState<ActiveSession | null>(null);
 
   const plan = profile?.plan ?? [];
@@ -103,16 +107,18 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   /* Load a profile's data set. */
   const loadFor = useCallback(async (p: Profile) => {
     try {
-      const [pr, se, ac] = await AsyncStorage.multiGet([
+      const [pr, se, ac, sw] = await AsyncStorage.multiGet([
         kProgress(p.id, weekKey),
         kSessions(p.id),
         kActive(p.id),
+        kSwaps(p.id),
       ]);
       setProgress(pr[1] ? JSON.parse(pr[1]) : {});
       setSessions(se[1] ? JSON.parse(se[1]) : []);
       setActive(ac[1] ? JSON.parse(ac[1]) : null);
+      setSwaps(sw[1] ? JSON.parse(sw[1]) : {});
     } catch {
-      setProgress({}); setSessions([]); setActive(null);
+      setProgress({}); setSessions([]); setActive(null); setSwaps({});
     }
   }, [weekKey]);
 
@@ -138,7 +144,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = useCallback(() => {
     setProfile(null);
-    setProgress({}); setSessions([]); setActive(null);
+    setProgress({}); setSessions([]); setActive(null); setSwaps({});
     AsyncStorage.removeItem(K_PROFILE).catch(() => {});
   }, []);
 
@@ -158,6 +164,14 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     if (next) AsyncStorage.setItem(kActive(profile.id), JSON.stringify(next)).catch(() => {});
     else AsyncStorage.removeItem(kActive(profile.id)).catch(() => {});
   }, [profile]);
+
+  const setSwap = useCallback((id: string, alt: string | null) => {
+    const next = { ...swaps };
+    if (alt) next[id] = alt;
+    else delete next[id];
+    setSwaps(next);
+    if (profile) AsyncStorage.setItem(kSwaps(profile.id), JSON.stringify(next)).catch(() => {});
+  }, [swaps, profile]);
 
   const toggle = useCallback((id: string) => {
     const next = { ...progress };
@@ -211,7 +225,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   return (
     <Store.Provider value={{
       ready, weekKey, profile, plan, selectProfile, signOut,
-      progress, toggle, resetDay, dayDone,
+      progress, toggle, resetDay, dayDone, swaps, setSwap,
       sessions, active, startSession, pauseSession, resumeSession, endSession, discardSession,
     }}>
       {children}

@@ -46,7 +46,8 @@ function FrameLoop({ frames, name }: { frames: [string, string]; name: string })
 }
 
 export default function ExerciseSheet({
-  visible, exercise, dayName, sectionTitle, sectionTag, checked, onToggle, onClose,
+  visible, exercise, dayName, sectionTitle, sectionTag, checked,
+  swappedName, onSwap, onToggle, onClose,
 }: {
   visible: boolean;
   exercise: Exercise | null;
@@ -54,14 +55,19 @@ export default function ExerciseSheet({
   sectionTitle: string;
   sectionTag?: TagKey;
   checked: boolean;
+  swappedName: string | null;
+  onSwap: (alt: string | null) => void;
   onToggle: () => void;
   onClose: () => void;
 }) {
   const { height } = useWindowDimensions();
   if (!exercise) return null;
 
+  const shownName = swappedName ?? exercise.name;
+  /* Alternates target the same muscles, so a swapped exercise keeps
+     the original's muscle map and alternates list. */
   const info = exinfoFor(exercise.name, sectionTag);
-  const demo = demoFor(exercise.name);
+  const demo = demoFor(shownName);
 
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
@@ -74,12 +80,19 @@ export default function ExerciseSheet({
 
         <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
           <Text style={styles.kicker}>{dayName.toUpperCase()} · {sectionTitle.toUpperCase()}</Text>
-          <Text style={styles.name}>{exercise.name}</Text>
+          <Text style={styles.name}>{shownName}</Text>
           <View style={styles.metaRow}>
             <Text style={styles.dose}>{exercise.dose}</Text>
-            {exercise.tags?.map(t => <Tag key={t} k={t} />)}
+            {!swappedName && exercise.tags?.map(t => <Tag key={t} k={t} />)}
           </View>
-          {exercise.note ? <Text style={styles.note}>{exercise.note}</Text> : null}
+          {swappedName ? (
+            <View style={styles.swapBanner}>
+              <Text style={styles.swapBannerText}>⇄ Swapped in for {exercise.name}</Text>
+              <Pressable style={styles.useBtn} onPress={() => onSwap(null)}>
+                <Text style={styles.useBtnText}>Revert</Text>
+              </Pressable>
+            </View>
+          ) : exercise.note ? <Text style={styles.note}>{exercise.note}</Text> : null}
 
           <Text style={styles.h}>TARGETS</Text>
           <View style={styles.chips}>
@@ -96,7 +109,7 @@ export default function ExerciseSheet({
               <Text style={styles.h}>HOW IT LOOKS</Text>
               {demo.kind === 'frames' ? (
                 <>
-                  <FrameLoop frames={demo.frames} name={exercise.name} />
+                  <FrameLoop key={shownName} frames={demo.frames} name={shownName} />
                   <Text style={styles.cap}>Silent loop · {demo.title}</Text>
                 </>
               ) : (
@@ -119,26 +132,41 @@ export default function ExerciseSheet({
             </>
           )}
 
-          {info.alt.length > 0 && (
+          {(info.alt.length > 0 || swappedName) && (
             <>
-              <Text style={styles.h}>SAME MUSCLES, OTHER OPTIONS</Text>
-              {info.alt.map(a => (
-                <Pressable key={a} style={styles.alt} onPress={() => Linking.openURL(imgSearch(a))}>
+              <Text style={styles.h}>{swappedName ? 'SWAP OPTIONS' : 'SAME MUSCLES, OTHER OPTIONS'}</Text>
+              {swappedName && (
+                <View style={styles.alt}>
                   <Text style={styles.altIcon}>↺</Text>
-                  <Text style={styles.altText}>{a}</Text>
-                  <Text style={styles.altGo}>🖼</Text>
-                </Pressable>
+                  <Pressable style={{ flex: 1 }} onPress={() => Linking.openURL(imgSearch(exercise.name))}>
+                    <Text style={styles.altText}>{exercise.name} <Text style={styles.altOrig}>(original)</Text></Text>
+                  </Pressable>
+                  <Pressable style={styles.useBtn} onPress={() => onSwap(null)}>
+                    <Text style={styles.useBtnText}>Use</Text>
+                  </Pressable>
+                </View>
+              )}
+              {info.alt.filter(a => a !== swappedName).map(a => (
+                <View key={a} style={styles.alt}>
+                  <Text style={styles.altIcon}>↺</Text>
+                  <Pressable style={{ flex: 1 }} onPress={() => Linking.openURL(imgSearch(a))}>
+                    <Text style={styles.altText}>{a} <Text style={styles.altGo}>🖼</Text></Text>
+                  </Pressable>
+                  <Pressable style={styles.useBtn} onPress={() => onSwap(a)}>
+                    <Text style={styles.useBtnText}>Use instead</Text>
+                  </Pressable>
+                </View>
               ))}
             </>
           )}
 
           <View style={styles.links}>
             <Pressable style={[styles.pill, { backgroundColor: C.blue }]}
-              onPress={() => Linking.openURL(ytSearch(exercise.name))}>
+              onPress={() => Linking.openURL(ytSearch(shownName))}>
               <Text style={styles.pillText}>▶ Watch tutorial</Text>
             </Pressable>
             <Pressable style={[styles.pill, { backgroundColor: C.card2 }]}
-              onPress={() => Linking.openURL(imgSearch(exercise.name))}>
+              onPress={() => Linking.openURL(imgSearch(shownName))}>
               <Text style={[styles.pillText, { color: C.ink }]}>🖼 See images</Text>
             </Pressable>
           </View>
@@ -204,6 +232,18 @@ const styles = StyleSheet.create({
   altIcon: { color: C.green, fontSize: 13.5, fontWeight: '800' },
   altText: { color: C.ink, fontSize: 13.5, flex: 1 },
   altGo: { fontSize: 13, opacity: 0.75 },
+  altOrig: { color: C.faint, fontSize: 11.5 },
+  useBtn: {
+    backgroundColor: C.card2, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 5,
+    borderWidth: StyleSheet.hairlineWidth, borderColor: C.line,
+  },
+  useBtnText: { color: C.green, fontSize: 11.5, fontWeight: '800' },
+  swapBanner: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10,
+    marginTop: 10, padding: 11, borderRadius: 10,
+    backgroundColor: '#12312A', borderLeftWidth: 3, borderLeftColor: C.green,
+  },
+  swapBannerText: { color: C.muted, fontSize: 12.5, flexShrink: 1 },
   links: { flexDirection: 'row', gap: 10, marginTop: 16, marginBottom: 14 },
   pill: { flex: 1, borderRadius: 999, paddingVertical: 12, alignItems: 'center' },
   pillText: { color: '#08110D', fontSize: 13, fontWeight: '800' },

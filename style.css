@@ -458,10 +458,18 @@ h1 { font-size: 30px; font-weight: 800; margin: 2px 0 16px; }
 .demo-cap a { color: var(--muted); text-decoration: underline; }
 
 .alts { list-style: none; }
-.alts li { border-bottom: 1px solid var(--line); position: relative; }
+.alts li {
+  border-bottom: 1px solid var(--line);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 .alts li:last-child { border-bottom: none; }
 .alts li::before { content: '↺'; color: var(--green); position: absolute; left: 0; top: 9px; font-weight: 800; font-size: 13.5px; }
 .alts a {
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -473,6 +481,35 @@ h1 { font-size: 30px; font-weight: 800; margin: 2px 0 16px; }
 }
 .alts a:active { opacity: 0.7; }
 .alts .alt-go { font-size: 13px; opacity: 0.75; flex: none; }
+.alts .alt-orig { color: var(--faint); font-size: 11.5px; }
+
+.alt-use {
+  flex: none;
+  background: var(--card2);
+  color: var(--green);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 11.5px;
+  font-weight: 800;
+}
+.alt-use:active { opacity: 0.7; }
+
+.swap-note { color: var(--green) !important; }
+.swap-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #12312A;
+  border-left: 3px solid var(--green);
+  color: var(--muted);
+  font-size: 12.5px;
+}
+.swap-banner b { color: var(--ink); font-weight: 700; }
 
 .sheet-links { display: flex; gap: 10px; margin: 16px 0 14px; }
 .sheet-links .pill { flex: 1; text-align: center; text-decoration: none; padding: 11px 0; }

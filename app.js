@@ -17,6 +17,7 @@ const K = {
   progress: (p, wk) => `twpwa:${p}:progress:${wk}`,
   sessions: p => `twpwa:${p}:sessions`,
   active: p => `twpwa:${p}:active`,
+  swaps: p => `twpwa:${p}:swaps`,
 };
 
 const PROFILES = {
@@ -80,6 +81,7 @@ let progress = {};
 let sessions = [];
 let active = null;                 // {dayId, startedAt|null, accumSec}
 let rest = null;                   // {end, len} — runtime only
+let swaps = {};                    // exId -> alternate name used instead
 
 let view = { name: profile ? 'week' : 'login' };
 let collapsed = {};                // sectionKey -> true
@@ -89,11 +91,13 @@ function loadProfileState() {
   progress = load(K.progress(profile, weekKey), {});
   sessions = load(K.sessions(profile), []);
   active = load(K.active(profile), null);
+  swaps = load(K.swaps(profile), {});
   rest = null;
   collapsed = {};
 }
 if (profile) loadProfileState();
 
+const saveSwaps = () => localStorage.setItem(K.swaps(profile), JSON.stringify(swaps));
 const saveProgress = () => localStorage.setItem(K.progress(profile, weekKey), JSON.stringify(progress));
 const saveSessions = () => localStorage.setItem(K.sessions(profile), JSON.stringify(sessions));
 const saveActive = () => active
@@ -312,13 +316,18 @@ function dayView(dayId, withBack) {
         ${sec.items.map((it, ii) => {
           const id = exKey(day.id, si, ii);
           const checked = !!progress[id];
+          const swap = swaps[id];
+          const shownName = swap || it.name;
+          const noteLine = swap
+            ? `<div class="note swap-note">⇄ Swapped in for ${esc(it.name)}</div>`
+            : (it.note ? `<div class="note">${esc(it.note)}</div>` : '');
           return `
           <div class="ex ${checked ? 'checked' : ''}" data-detail="${id}" role="button" tabindex="0"
-               aria-label="${esc(it.name)} details">
-            <button class="check" data-toggle="${id}" aria-label="Mark ${esc(it.name)} done">✓</button>
+               aria-label="${esc(shownName)} details">
+            <button class="check" data-toggle="${id}" aria-label="Mark ${esc(shownName)} done">✓</button>
             <span class="body">
-              <span class="name-row"><span class="name">${esc(it.name)}</span>${tagsHtml(it.tags)}</span>
-              ${it.note ? `<div class="note">${esc(it.note)}</div>` : ''}
+              <span class="name-row"><span class="name">${esc(shownName)}</span>${swap ? '' : tagsHtml(it.tags)}</span>
+              ${noteLine}
             </span>
             <span class="dose">${it.dose}</span>
             <span class="chev">›</span>
@@ -460,31 +469,55 @@ function renderSheet() {
   const day = plan.find(d => d.id === dayId);
   const sec = day.sections[+si];
   const it = sec.items[+ii];
+  const swap = swaps[sheetId] || null;
+  const shownName = swap || it.name;
+  /* Alternates target the same muscles as the original, so a swapped
+     exercise keeps the original's muscle map. */
   const info = exinfoFor(it.name, sec.tag);
   const checked = !!progress[sheetId];
-  const q = encodeURIComponent(it.name + ' exercise');
+  const q = encodeURIComponent(shownName + ' exercise');
+
+  /* Swap options: every alternate except the one already in use. */
+  const swapRows = info.alt
+    .filter(a => a !== swap)
+    .map(a => `
+      <li>
+        <a href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(a + ' exercise')}"
+           target="_blank" rel="noopener">${esc(a)}<span class="alt-go">🖼</span></a>
+        <button class="alt-use" data-swap="${esc(a)}">Use instead</button>
+      </li>`).join('');
 
   sheet.innerHTML = `
     <div class="sheet-grab"></div>
     <button class="sheet-close" data-sheet-close aria-label="Close">✕</button>
     <span class="label">${day.name} · ${sec.title}</span>
-    <h2 class="sheet-name">${esc(it.name)}</h2>
+    <h2 class="sheet-name">${esc(shownName)}</h2>
     <div class="sheet-meta">
       <span class="sheet-dose">${it.dose}</span>
-      ${tagsHtml(it.tags)}
+      ${swap ? '' : tagsHtml(it.tags)}
     </div>
-    ${it.note ? `<p class="sheet-note">${esc(it.note)}</p>` : ''}
+    ${swap ? `
+      <div class="swap-banner">
+        <span>⇄ Swapped in for <b>${esc(it.name)}</b></span>
+        <button class="alt-use" data-swap-revert>Revert</button>
+      </div>` : (it.note ? `<p class="sheet-note">${esc(it.note)}</p>` : '')}
 
     <span class="label sheet-h">Targets</span>
     <div class="chips">${info.m.map(k => `<span class="chip">${MUSCLES[k] || k}</span>`).join('')}</div>
     ${bodyMap(info.m)}
-    ${demoHtml(it.name)}
+    ${demoHtml(shownName)}
 
-    ${info.alt.length ? `
-      <span class="label sheet-h">Same muscles, other options</span>
-      <ul class="alts">${info.alt.map(a => `
-        <li><a href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(a + ' exercise')}"
-               target="_blank" rel="noopener">${esc(a)}<span class="alt-go">🖼</span></a></li>`).join('')}</ul>` : ''}
+    ${(swapRows || swap) ? `
+      <span class="label sheet-h">${swap ? 'Swap options' : 'Same muscles, other options'}</span>
+      <ul class="alts">
+        ${swap ? `
+        <li>
+          <a href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(it.name + ' exercise')}"
+             target="_blank" rel="noopener">${esc(it.name)} <span class="alt-orig">(original)</span></a>
+          <button class="alt-use" data-swap-revert>Use</button>
+        </li>` : ''}
+        ${swapRows}
+      </ul>` : ''}
 
     <div class="sheet-links">
       <a class="pill blue" target="_blank" rel="noopener"
@@ -519,6 +552,23 @@ $('#sheet-backdrop').addEventListener('click', closeSheet);
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && sheetId) closeSheet(); });
 $('#sheet').addEventListener('click', e => {
   if (e.target.closest('[data-sheet-close]')) return closeSheet();
+  const useAlt = e.target.closest('[data-swap]');
+  if (useAlt) {
+    swaps[sheetId] = useAlt.dataset.swap;
+    saveSwaps();
+    buzz(10);
+    render();
+    renderSheet();
+    return;
+  }
+  if (e.target.closest('[data-swap-revert]')) {
+    delete swaps[sheetId];
+    saveSwaps();
+    buzz(10);
+    render();
+    renderSheet();
+    return;
+  }
   if (e.target.closest('[data-sheet-toggle]')) {
     if (progress[sheetId]) delete progress[sheetId]; else progress[sheetId] = true;
     saveProgress();
