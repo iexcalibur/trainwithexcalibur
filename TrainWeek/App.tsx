@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet, Alert } from 'react-native';
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import { BlurView } from 'expo-blur';
 import Svg, { Path } from 'react-native-svg';
 import { StoreProvider, useStore } from './src/store';
 import LoginScreen from './src/screens/LoginScreen';
@@ -12,7 +13,7 @@ import { C } from './src/theme';
 
 type Tab = 'week' | 'today' | 'history';
 
-const CHROME_BG = 'rgba(21, 26, 33, 0.94)';
+const CHROME_BG = 'rgba(21, 26, 33, 0.55)';
 
 function Root() {
   const { ready, active, profile, plan, signOut, resetDay } = useStore();
@@ -73,7 +74,8 @@ function Root() {
       <View style={{ flex: 1 }}>{content}</View>
 
       {/* Floating topper */}
-      <View style={[styles.topper, { top: insets.top + 10 }]}>
+      <BlurView intensity={50} tint="dark" blurMethod="dimezisBlurViewSdk31Plus"
+        style={[styles.topper, { top: insets.top + 10 }]}>
         {currentDay ? (
           <>
             {openedDay ? (
@@ -103,10 +105,11 @@ function Root() {
             </Pressable>
           </>
         )}
-      </View>
+      </BlurView>
 
       {/* Floating pill nav */}
-      <View style={[styles.nav, { bottom: insets.bottom + 12 }]}>
+      <BlurView intensity={50} tint="dark" blurMethod="dimezisBlurViewSdk31Plus"
+        style={[styles.nav, { bottom: insets.bottom + 12 }]}>
         {tabs.map(t => {
           const activeTab = !openedDay && tab === t.key;
           return (
@@ -123,7 +126,7 @@ function Root() {
             </Pressable>
           );
         })}
-      </View>
+      </BlurView>
     </SafeAreaView>
   );
 }
@@ -153,6 +156,7 @@ export default function App() {
 const chrome = {
   backgroundColor: CHROME_BG,
   borderRadius: 999,
+  overflow: 'hidden' as const,
   borderWidth: StyleSheet.hairlineWidth,
   borderColor: C.line,
   shadowColor: '#000',
