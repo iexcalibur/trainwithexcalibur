@@ -556,6 +556,39 @@ h1 { font-size: 30px; font-weight: 800; margin: 2px 0 16px; }
 }
 .swap-banner b { color: var(--ink); font-weight: 700; }
 
+/* ---------- live image strip ---------- */
+.strip-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+}
+.strip-head .sheet-h { margin-bottom: 8px; }
+.strip-more { color: var(--muted); font-size: 11.5px; font-weight: 700; text-decoration: none; }
+.strip-more:active { color: var(--green); }
+
+.img-strip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  min-height: 96px;
+  align-items: center;
+}
+.img-strip::-webkit-scrollbar { display: none; }
+.img-strip a { flex: none; }
+.img-strip img {
+  height: 96px;
+  width: auto;
+  max-width: 160px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--card2);
+}
+.strip-empty { color: var(--faint); font-size: 12px; }
+
 .sheet-links { display: flex; gap: 10px; margin: 16px 0 14px; }
 .sheet-links .pill { flex: 1; text-align: center; text-decoration: none; padding: 11px 0; }
 
@@ -631,6 +664,21 @@ h1 { font-size: 30px; font-weight: 800; margin: 2px 0 16px; }
   font-weight: 900;
   display: grid;
   place-items: center;
+}
+
+.topper-done {
+  flex: none;
+  padding: 9px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  background: var(--green);
+  color: #08110D;
+}
+.topper-done.is-done {
+  background: var(--card2);
+  color: var(--green);
+  border: 1px solid var(--line);
 }
 
 .topper-action {
