@@ -102,7 +102,7 @@ function isoWeekOf(isoDate: string): string {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: C.bg },
-  content: { padding: 20, paddingBottom: 40 },
+  content: { padding: 20, paddingTop: 74, paddingBottom: 130 },
   h1: { color: C.ink, fontSize: 30, fontWeight: '800', marginTop: 2, marginBottom: 16 },
   statRow: { flexDirection: 'row', gap: 10 },
   stat: { flex: 1, alignItems: 'center', paddingVertical: 16 },

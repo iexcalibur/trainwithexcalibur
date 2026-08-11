@@ -8,7 +8,7 @@ import Ring from '../components/Ring';
 import { Card, Label } from '../components/ui';
 import { C } from '../theme';
 
-export default function WeekScreen({ openDay, onSwitchProfile }: { openDay: (id: string) => void; onSwitchProfile: () => void }) {
+export default function WeekScreen({ openDay }: { openDay: (id: string) => void }) {
   const { progress, dayDone, sessions, weekKey, plan, profile, order, setOrder } = useStore();
   const [editing, setEditing] = React.useState(false);
 
@@ -24,18 +24,8 @@ export default function WeekScreen({ openDay, onSwitchProfile }: { openDay: (id:
 
   return (
     <ScrollView style={styles.root} contentContainerStyle={styles.content}>
-      <View style={styles.ovHead}>
-        <View style={{ flex: 1 }}>
-          <Label>{profile?.tagline ?? 'Training week'}</Label>
-          <Text style={styles.h1}>Overview</Text>
-        </View>
-        <Pressable
-          style={[styles.avatar, { backgroundColor: profile?.color ?? C.green }]}
-          onPress={onSwitchProfile}
-        >
-          <Text style={styles.avatarText}>{profile?.name?.[0] ?? '?'}</Text>
-        </Pressable>
-      </View>
+      <Label>{profile?.tagline ?? 'Training week'}</Label>
+      <Text style={styles.h1}>Overview</Text>
 
       <Card style={styles.heroCard}>
         <View style={styles.heroRow}>
@@ -138,7 +128,7 @@ const styles = StyleSheet.create({
   ovHead: { flexDirection: 'row', alignItems: 'flex-start', gap: 12 },
   avatar: { width: 38, height: 38, borderRadius: 19, alignItems: 'center', justifyContent: 'center', marginTop: 4 },
   avatarText: { color: '#08110D', fontSize: 15, fontWeight: '900' },
-  content: { padding: 20, paddingBottom: 40 },
+  content: { padding: 20, paddingTop: 74, paddingBottom: 130 },
   h1: { color: C.ink, fontSize: 30, fontWeight: '800', marginTop: 2, marginBottom: 16 },
   heroCard: { paddingVertical: 22 },
   heroRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },

@@ -216,14 +216,8 @@ function weekView() {
   const today = todayDayId();
 
   return `
-    <div class="ov-head">
-      <div>
-        <span class="label">${p.tagline}</span>
-        <h1>Overview</h1>
-      </div>
-      <button class="avatar avatar-btn" data-act="switch-profile" style="background:${p.color}"
-              aria-label="Switch profile">${p.name[0]}</button>
-    </div>
+    <span class="label">${p.tagline}</span>
+    <h1>Overview</h1>
     <div class="card hero">
       <div class="hero-stat"><b>${sessionsThisWeek}<span class="dim">/${plan.length}</span></b><span class="label">Sessions</span></div>
       ${ring(148, 13, pct, 'var(--green)',
@@ -373,10 +367,6 @@ function dayView(dayId, withBack) {
        <button class="pill gray" data-rest="0">Skip</button></div>`;
 
   return `
-    <div class="top-row">
-      ${withBack ? `<button class="back-btn" data-act="back">‹ Week</button>` : '<span></span>'}
-      <button class="reset-btn" data-act="reset-day">Reset</button>
-    </div>
     <div class="day-header">
       <div class="titles">
         <span class="label">${day.name} · ${day.time}</span>
@@ -477,14 +467,8 @@ function historyView() {
 
   const p = PROFILES[profile];
   return `
-    <div class="ov-head">
-      <div>
-        <span class="label">${p.name} · Training history</span>
-        <h1>History</h1>
-      </div>
-      <button class="avatar avatar-btn" data-act="switch-profile" style="background:${p.color}"
-              aria-label="Switch profile">${p.name[0]}</button>
-    </div>
+    <span class="label">${p.name} · Training history</span>
+    <h1>History</h1>
     <div class="stat-row">
       <div class="card stat"><b>${streak}</b><span class="label">Day streak</span></div>
       <div class="card stat"><b>${thisWeek.length}<span class="dim">/${plan.length}</span></b><span class="label">This week</span></div>
@@ -592,10 +576,6 @@ function exerciseView() {
       </li>`).join('');
 
   return `
-    <div class="top-row">
-      <button class="back-btn" data-act="ex-back">‹ ${day.focus}</button>
-      <span></span>
-    </div>
     <span class="label">${day.name} · ${sec.title}</span>
     <h2 class="sheet-name ex-page-name">${esc(shownName)}</h2>
     <div class="sheet-meta">
@@ -753,9 +733,47 @@ function computeStreak(dates) {
 
 /* ---------------- render + events ---------------- */
 
+/* Floating topper: brand + avatar on the tab screens, contextual
+   back / reset on the pushed screens. */
+function renderTopper() {
+  const topper = $('#topper');
+  if (view.name === 'login') { topper.hidden = true; return; }
+  topper.hidden = false;
+
+  const p = PROFILES[profile];
+  const brand = `
+    <span class="topper-brand">
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+        <path d="M3 12h12M11 5l7 7-7 7" stroke="var(--green)" stroke-width="2.6"
+              fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Running Arrow</span>
+    </span>`;
+  const avatar = `
+    <button class="topper-avatar" data-tact="switch-profile" aria-label="Switch profile"
+            style="background:${p.color}">${p.name[0]}</button>`;
+
+  if (view.name === 'day') {
+    const day = plan.find(d => d.id === view.dayId);
+    topper.innerHTML = `
+      ${view.from === 'week' ? `<button class="topper-back" data-tact="back" aria-label="Back">‹</button>` : brand}
+      <span class="topper-title">${day.name}</span>
+      <button class="topper-action" data-tact="reset-day">Reset</button>`;
+  } else if (view.name === 'exercise') {
+    const day = plan.find(d => d.id === view.exId.split('-')[0]);
+    topper.innerHTML = `
+      <button class="topper-back" data-tact="ex-back" aria-label="Back">‹</button>
+      <span class="topper-title">${day.focus}</span>
+      <span class="topper-spacer"></span>`;
+  } else {
+    topper.innerHTML = `${brand}<span class="topper-spacer"></span>${avatar}`;
+  }
+}
+
 function render() {
   const main = $('#view');
   document.getElementById('nav').style.display = view.name === 'login' ? 'none' : 'flex';
+  renderTopper();
   if (view.name === 'login') main.innerHTML = loginView();
   else if (view.name === 'week') main.innerHTML = weekView();
   else if (view.name === 'day') main.innerHTML = dayView(view.dayId, view.from === 'week');
@@ -780,6 +798,32 @@ function render() {
     b.classList.toggle('active', activeTab);
   });
 }
+
+$('#topper').addEventListener('click', e => {
+  const b = e.target.closest('[data-tact]');
+  if (!b) return;
+  switch (b.dataset.tact) {
+    case 'back':
+      view = { name: 'week' };
+      break;
+    case 'ex-back':
+      view = view.back || { name: 'week' };
+      break;
+    case 'switch-profile':
+      weekEdit = false;
+      view = { name: 'login' };
+      break;
+    case 'reset-day': {
+      const day = plan.find(d => d.id === view.dayId);
+      if (!day || !confirm(`Uncheck every exercise for ${day.name}?`)) return;
+      for (const k of Object.keys(progress)) if (k.startsWith(day.id + '-')) delete progress[k];
+      saveProgress();
+      break;
+    }
+  }
+  window.scrollTo(0, 0);
+  render();
+});
 
 document.getElementById('nav').addEventListener('click', e => {
   const btn = e.target.closest('[data-nav]');

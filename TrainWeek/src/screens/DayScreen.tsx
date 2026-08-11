@@ -10,7 +10,7 @@ import ExerciseSheet from '../components/ExerciseSheet';
 
 const REST_PRESETS = [60, 90, 120];
 
-export default function DayScreen({ dayId, goBack }: { dayId: string; goBack?: () => void }) {
+export default function DayScreen({ dayId }: { dayId: string }) {
   const { plan } = useStore();
   const day = plan.find(d => d.id === dayId)!;
   const store = useStore();
@@ -65,21 +65,6 @@ export default function DayScreen({ dayId, goBack }: { dayId: string; goBack?: (
   return (
     <View style={styles.root}>
       <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.content}>
-        <View style={styles.topRow}>
-          {goBack ? (
-            <Pressable onPress={goBack} hitSlop={12}><Text style={styles.back}>‹ Week</Text></Pressable>
-          ) : <View />}
-          <Pressable
-            onPress={() => Alert.alert('Reset day?', 'Uncheck every exercise for ' + day.name + '.', [
-              { text: 'Cancel', style: 'cancel' },
-              { text: 'Reset', style: 'destructive', onPress: () => resetDay(day.id) },
-            ])}
-            hitSlop={12}
-          >
-            <Text style={styles.reset}>Reset</Text>
-          </Pressable>
-        </View>
-
         <View style={styles.header}>
           <View style={{ flex: 1 }}>
             <Label>{day.name} · {day.time}</Label>
@@ -246,7 +231,7 @@ function Btn({ label, color, ink, onPress }: { label: string; color: string; ink
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: C.bg },
-  content: { padding: 20, paddingBottom: 40 },
+  content: { padding: 20, paddingTop: 74, paddingBottom: 130 },
   topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
   back: { color: C.blue, fontSize: 15, fontWeight: '700' },
   reset: { color: C.faint, fontSize: 13, fontWeight: '600' },
