@@ -2,12 +2,14 @@ import React from 'react';
 import { ScrollView, View, Text, Pressable, StyleSheet } from 'react-native';
 import { dayTotal } from '../data/plan';
 import { useStore } from '../store';
+import ReorderModal from '../components/ReorderModal';
 import Ring from '../components/Ring';
 import { Card, Label } from '../components/ui';
 import { C } from '../theme';
 
 export default function WeekScreen({ openDay, onSwitchProfile }: { openDay: (id: string) => void; onSwitchProfile: () => void }) {
-  const { progress, dayDone, sessions, weekKey, plan, profile } = useStore();
+  const { progress, dayDone, sessions, weekKey, plan, profile, order, setOrder } = useStore();
+  const [editing, setEditing] = React.useState(false);
 
   const totals = plan.map(d => ({ day: d, total: dayTotal(d), done: dayDone(d.id) }));
   const weekTotal = totals.reduce((n, t) => n + t.total, 0);
@@ -54,7 +56,7 @@ export default function WeekScreen({ openDay, onSwitchProfile }: { openDay: (id:
       <View style={styles.dayRings}>
         {totals.map(({ day, total, done }) => {
           const p = total ? done / total : 0;
-          const isToday = day.id === todayId;
+          const isToday = day.slotId === todayId;
           return (
             <Pressable key={day.id} style={styles.dayRing} onPress={() => openDay(day.id)}>
               <Ring size={56} stroke={5} progress={p} color={p >= 1 ? C.green : C.blue}>
@@ -66,7 +68,12 @@ export default function WeekScreen({ openDay, onSwitchProfile }: { openDay: (id:
         })}
       </View>
 
-      <Label style={styles.sectionLabel}>The week at a glance</Label>
+      <View style={styles.glanceHead}>
+        <Label>The week at a glance</Label>
+        <Pressable onPress={() => setEditing(true)} hitSlop={10}>
+          <Text style={styles.editLink}>Edit order</Text>
+        </Pressable>
+      </View>
       {totals.map(({ day, total, done }) => (
         <Pressable key={day.id} onPress={() => openDay(day.id)}>
           <Card style={styles.dayCard}>
@@ -87,6 +94,14 @@ export default function WeekScreen({ openDay, onSwitchProfile }: { openDay: (id:
           </Card>
         </Pressable>
       ))}
+
+      <ReorderModal
+        visible={editing}
+        base={profile?.plan ?? []}
+        order={order}
+        onDone={ord => { setOrder(ord); setEditing(false); }}
+        onCancel={() => setEditing(false)}
+      />
 
       {(profile?.rules ?? []).map((r, i) => (
         <Card key={i} style={[styles.ruleCard, i === (profile!.rules.length - 1) && { marginBottom: 24 }]}>
@@ -128,6 +143,8 @@ const styles = StyleSheet.create({
   dayRingPct: { color: C.ink, fontSize: 13, fontWeight: '800', fontVariant: ['tabular-nums'] },
   dayRingLabel: { color: C.muted, fontSize: 10, fontWeight: '800', letterSpacing: 1.2 },
   sectionLabel: { marginTop: 26, marginBottom: 12 },
+  glanceHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 26, marginBottom: 12 },
+  editLink: { color: C.blue, fontSize: 13, fontWeight: '700' },
   dayCard: { marginBottom: 10, padding: 14 },
   dayCardLeft: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   dayNum: { color: C.green, fontSize: 20, fontWeight: '900', width: 30 },

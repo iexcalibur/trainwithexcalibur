@@ -97,6 +97,63 @@ h1 { font-size: 30px; font-weight: 800; margin: 2px 0 16px; }
 .day-card .bar { height: 4px; border-radius: 2px; background: var(--track); margin-top: 11px; overflow: hidden; }
 .day-card .bar i { display: block; height: 100%; background: var(--green); border-radius: 2px; }
 
+/* ---------- week reorder ---------- */
+.glance-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 24px 0 12px;
+}
+.glance-head .label { margin: 0; }
+
+.reorder { display: flex; flex-direction: column; gap: 10px; }
+.reorder-row { display: flex; align-items: stretch; gap: 10px; }
+.reorder-day {
+  flex: none;
+  width: 44px;
+  display: grid;
+  place-items: center;
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+.reorder-card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  transition: transform 0.15s;
+}
+.reorder-card.dragging {
+  transition: none;
+  z-index: 5;
+  position: relative;
+  border-color: var(--green);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  cursor: grabbing;
+}
+.reorder-grip { color: var(--faint); font-size: 17px; font-weight: 700; }
+.reorder-body { flex: 1; min-width: 0; }
+.reorder-focus { display: block; font-size: 15px; font-weight: 800; }
+.reorder-sub {
+  display: block;
+  color: var(--muted);
+  font-size: 11.5px;
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.reorder-hint { color: var(--faint); font-size: 11.5px; margin: 12px 2px; line-height: 1.5; }
+.reorder-actions { display: flex; gap: 10px; }
+.reorder-actions .pill { flex: 1; text-align: center; padding: 12px 0; border: none; }
+
 .rule-card { margin-top: 12px; }
 .rule-card .label { display: block; margin-bottom: 6px; }
 .rule-card p { color: var(--muted); font-size: 13px; line-height: 1.5; }

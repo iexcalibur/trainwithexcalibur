@@ -30,8 +30,9 @@ function Root() {
   }
 
   const todayDayId = () => {
-    const id = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][new Date().getDay()];
-    return plan.some(d => d.id === id) ? id : plan[0].id;
+    const wd = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][new Date().getDay()];
+    const slot = plan.find(d => d.slotId === wd);
+    return slot ? slot.id : plan[0].id;   // workout assigned to today's slot
   };
 
   let content: React.ReactNode;

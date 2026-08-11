@@ -18,6 +18,8 @@ export interface Section {
 
 export interface Day {
   id: string;
+  /** Weekday slot this workout currently occupies (set by applyOrder). */
+  slotId?: string;
   num: string;
   name: string;
   short: string;

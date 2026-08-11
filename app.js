@@ -18,6 +18,7 @@ const K = {
   sessions: p => `twpwa:${p}:sessions`,
   active: p => `twpwa:${p}:active`,
   swaps: p => `twpwa:${p}:swaps`,
+  order: p => `twpwa:${p}:order`,
 };
 
 const PROFILES = {
@@ -82,21 +83,46 @@ let sessions = [];
 let active = null;                 // {dayId, startedAt|null, accumSec}
 let rest = null;                   // {end, len} — runtime only
 let swaps = {};                    // exId -> alternate name used instead
+let order = [];                    // workout ids in weekday-slot order
+let weekEdit = false;              // reorder mode on the overview
+let editOrder = [];                // working copy while editing
 
 let view = { name: profile ? 'week' : 'login' };
 let collapsed = {};                // sectionKey -> true
 
+/* Weekday slots stay fixed (Mon, Tue, …); workouts permute between
+   them. Progress, swaps and history are keyed by the WORKOUT id, so
+   they travel with the workout when the order changes. */
+function applyOrder(base, ord) {
+  const byId = Object.fromEntries(base.map(d => [d.id, d]));
+  const valid = Array.isArray(ord) && ord.length === base.length
+    && base.every(d => ord.includes(d.id));
+  const seq = valid ? ord : base.map(d => d.id);
+  return seq.map((wid, i) => ({
+    ...byId[wid],
+    slotId: base[i].id,
+    num: base[i].num,
+    name: base[i].name,
+    short: base[i].short,
+  }));
+}
+
 function loadProfileState() {
-  plan = PROFILES[profile].plan();
+  const base = PROFILES[profile].plan();
+  order = load(K.order(profile), null) || base.map(d => d.id);
+  plan = applyOrder(base, order);
+  order = plan.map(d => d.id);     // normalized if stored order was invalid
   progress = load(K.progress(profile, weekKey), {});
   sessions = load(K.sessions(profile), []);
   active = load(K.active(profile), null);
   swaps = load(K.swaps(profile), {});
   rest = null;
+  weekEdit = false;
   collapsed = {};
 }
 if (profile) loadProfileState();
 
+const saveOrder = () => localStorage.setItem(K.order(profile), JSON.stringify(order));
 const saveSwaps = () => localStorage.setItem(K.swaps(profile), JSON.stringify(swaps));
 const saveProgress = () => localStorage.setItem(K.progress(profile, weekKey), JSON.stringify(progress));
 const saveSessions = () => localStorage.setItem(K.sessions(profile), JSON.stringify(sessions));
@@ -111,8 +137,9 @@ const elapsedSec = () => !active ? 0
   : Math.floor(active.accumSec + (active.startedAt ? (Date.now() - active.startedAt) / 1000 : 0));
 
 function todayDayId() {
-  const id = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][new Date().getDay()];
-  return plan.some(d => d.id === id) ? id : plan[0].id;
+  const wd = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][new Date().getDay()];
+  const slot = plan.find(d => d.slotId === wd);
+  return slot ? slot.id : plan[0].id;   // workout assigned to today's slot
 }
 
 /* ---------------- tiny helpers ---------------- */
@@ -213,8 +240,11 @@ function weekView() {
         </button>`;
       }).join('')}
     </div>
-    <span class="label section-label">The week at a glance</span>
-    ${totals.map(({ d, total, done }) => `
+    <div class="glance-head">
+      <span class="label">The week at a glance</span>
+      ${weekEdit ? '' : `<button class="link-btn" data-act="edit-order">Edit order</button>`}
+    </div>
+    ${weekEdit ? reorderView() : totals.map(({ d, total, done }) => `
       <button class="card day-card" data-open-day="${d.id}" aria-label="Open ${d.name} · ${d.focus}">
         <div class="day-card-row">
           <span class="num">${d.num}</span>
@@ -234,6 +264,82 @@ function weekView() {
       <span class="label" style="color:${r.color}">${r.label}</span>
       <p>${r.text}</p>
     </div>`).join('')}`;
+}
+
+/* Edit mode: fixed weekday rail on the left, draggable workout cards. */
+function reorderView() {
+  const base = PROFILES[profile].plan();
+  const byId = Object.fromEntries(base.map(d => [d.id, d]));
+  return `
+    <div class="reorder">
+      ${editOrder.map((wid, i) => {
+        const w = byId[wid];
+        return `
+        <div class="reorder-row">
+          <span class="reorder-day">${base[i].short}</span>
+          <div class="card reorder-card" data-ri="${i}">
+            <span class="reorder-grip">≡</span>
+            <span class="reorder-body">
+              <span class="reorder-focus">${esc(w.focus)}</span>
+              <span class="reorder-sub">${esc(w.subtitle)}</span>
+            </span>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <p class="reorder-hint">Drag a workout up or down — the weekdays stay put. Your checkmarks move with the workout.</p>
+    <div class="reorder-actions">
+      <button class="pill gray" data-act="order-cancel">Cancel</button>
+      <button class="pill green" data-act="order-ok">OK</button>
+    </div>`;
+}
+
+function setupReorderDrag() {
+  const list = document.querySelector('.reorder');
+  if (!list) return;
+  const cards = [...list.querySelectorAll('.reorder-card')];
+  cards.forEach(card => {
+    card.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      const from = +card.dataset.ri;
+      const rowH = card.closest('.reorder-row').offsetHeight;
+      const startY = e.clientY;
+      let target = from;
+      try { card.setPointerCapture(e.pointerId); } catch {}
+      card.classList.add('dragging');
+      const onMove = ev => {
+        const dy = ev.clientY - startY;
+        card.style.transform = `translateY(${dy}px)`;
+        const t = Math.max(0, Math.min(cards.length - 1, from + Math.round(dy / rowH)));
+        if (t !== target) {
+          target = t;
+          cards.forEach(c => {
+            if (c === card) return;
+            const i = +c.dataset.ri;
+            let shift = 0;
+            if (from < target && i > from && i <= target) shift = -rowH;
+            else if (from > target && i >= target && i < from) shift = rowH;
+            c.style.transform = shift ? `translateY(${shift}px)` : '';
+          });
+        }
+      };
+      const onUp = () => {
+        card.removeEventListener('pointermove', onMove);
+        card.removeEventListener('pointerup', onUp);
+        card.removeEventListener('pointercancel', onUp);
+        card.classList.remove('dragging');
+        if (target !== from) {
+          const [moved] = editOrder.splice(from, 1);
+          editOrder.splice(target, 0, moved);
+          buzz(10);
+        }
+        render();
+      };
+      card.addEventListener('pointermove', onMove);
+      card.addEventListener('pointerup', onUp);
+      card.addEventListener('pointercancel', onUp);
+    });
+  });
 }
 
 function dayView(dayId, withBack) {
@@ -693,6 +799,8 @@ function render() {
   const heatScroll = $('.heat-scroll');
   if (heatScroll) heatScroll.scrollLeft = heatScroll.scrollWidth;
 
+  if (weekEdit) setupReorderDrag();
+
   document.querySelectorAll('.bottom-nav button').forEach(b => {
     const key = b.dataset.nav;
     const activeTab = (view.name === 'week' && key === 'week')
@@ -762,7 +870,22 @@ $('#view').addEventListener('click', e => {
   if (!act) return;
   const day = view.name === 'day' ? plan.find(d => d.id === view.dayId) : null;
   switch (act.dataset.act) {
+    case 'edit-order':
+      weekEdit = true;
+      editOrder = [...order];
+      break;
+    case 'order-ok':
+      order = [...editOrder];
+      saveOrder();
+      plan = applyOrder(PROFILES[profile].plan(), order);
+      weekEdit = false;
+      buzz(10);
+      break;
+    case 'order-cancel':
+      weekEdit = false;
+      break;
     case 'switch-profile':
+      weekEdit = false;
       view = { name: 'login' };
       break;
     case 'back':
