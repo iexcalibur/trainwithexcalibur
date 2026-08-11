@@ -566,28 +566,19 @@ function demoHtml(name) {
     </div>`;
 }
 
-let sheetId = null;
-
-function renderSheet() {
-  const backdrop = $('#sheet-backdrop');
-  const sheet = $('#sheet');
-  if (!sheetId) {
-    stopDemoLoop();
-    backdrop.hidden = true;
-    sheet.hidden = true;
-    document.body.style.overflow = '';
-    return;
-  }
-  const [dayId, si, ii] = sheetId.split('-');
+/* Exercise detail — a full screen pushed over the day view. */
+function exerciseView() {
+  const exId = view.exId;
+  const [dayId, si, ii] = exId.split('-');
   const day = plan.find(d => d.id === dayId);
   const sec = day.sections[+si];
   const it = sec.items[+ii];
-  const swap = swaps[sheetId] || null;
+  const swap = swaps[exId] || null;
   const shownName = swap || it.name;
   /* Alternates target the same muscles as the original, so a swapped
      exercise keeps the original's muscle map. */
   const info = exinfoFor(it.name, sec.tag);
-  const checked = !!progress[sheetId];
+  const checked = !!progress[exId];
   const q = encodeURIComponent(shownName + ' exercise');
 
   /* Swap options: every alternate except the one already in use. */
@@ -600,11 +591,13 @@ function renderSheet() {
         <button class="alt-use" data-swap="${esc(a)}">Use instead</button>
       </li>`).join('');
 
-  sheet.innerHTML = `
-    <div class="sheet-grab"></div>
-    <button class="sheet-close" data-sheet-close aria-label="Close">✕</button>
+  return `
+    <div class="top-row">
+      <button class="back-btn" data-act="ex-back">‹ ${day.focus}</button>
+      <span></span>
+    </div>
     <span class="label">${day.name} · ${sec.title}</span>
-    <h2 class="sheet-name">${esc(shownName)}</h2>
+    <h2 class="sheet-name ex-page-name">${esc(shownName)}</h2>
     <div class="sheet-meta">
       <span class="sheet-dose">${it.dose}</span>
       ${swap ? '' : tagsHtml(it.tags)}
@@ -642,52 +635,18 @@ function renderSheet() {
     <button class="pill ${checked ? 'gray' : 'green'} sheet-toggle" data-sheet-toggle>
       ${checked ? '✓ Done — tap to undo' : 'Mark as done'}
     </button>`;
-  backdrop.hidden = false;
-  sheet.hidden = false;
-  requestAnimationFrame(() => { backdrop.classList.add('open'); sheet.classList.add('open'); });
-  document.body.style.overflow = 'hidden';
-  startDemoLoop();
 }
 
-function openSheet(id) {
-  sheetId = id;
-  renderSheet();
+function openExercise(id) {
+  view = { name: 'exercise', exId: id, back: view };
+  window.scrollTo(0, 0);
+  render();
 }
 
-function closeSheet() {
-  $('#sheet-backdrop').classList.remove('open');
-  $('#sheet').classList.remove('open');
-  sheetId = null;
-  setTimeout(renderSheet, 180);
-}
-
-$('#sheet-backdrop').addEventListener('click', closeSheet);
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && sheetId) closeSheet(); });
-$('#sheet').addEventListener('click', e => {
-  if (e.target.closest('[data-sheet-close]')) return closeSheet();
-  const useAlt = e.target.closest('[data-swap]');
-  if (useAlt) {
-    swaps[sheetId] = useAlt.dataset.swap;
-    saveSwaps();
-    buzz(10);
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && view.name === 'exercise') {
+    view = view.back || { name: 'week' };
     render();
-    renderSheet();
-    return;
-  }
-  if (e.target.closest('[data-swap-revert]')) {
-    delete swaps[sheetId];
-    saveSwaps();
-    buzz(10);
-    render();
-    renderSheet();
-    return;
-  }
-  if (e.target.closest('[data-sheet-toggle]')) {
-    if (progress[sheetId]) delete progress[sheetId]; else progress[sheetId] = true;
-    saveProgress();
-    buzz(10);
-    render();
-    renderSheet();
   }
 });
 
@@ -800,7 +759,12 @@ function render() {
   if (view.name === 'login') main.innerHTML = loginView();
   else if (view.name === 'week') main.innerHTML = weekView();
   else if (view.name === 'day') main.innerHTML = dayView(view.dayId, view.from === 'week');
+  else if (view.name === 'exercise') main.innerHTML = exerciseView();
   else main.innerHTML = historyView();
+
+  /* The exercise screen owns the demo loop. */
+  if (view.name === 'exercise') startDemoLoop();
+  else stopDemoLoop();
 
   /* Heatmap opens showing the most recent weeks. */
   const heatScroll = $('.heat-scroll');
@@ -853,7 +817,29 @@ $('#view').addEventListener('click', e => {
     return render();
   }
   const detail = e.target.closest('[data-detail]');
-  if (detail) return openSheet(detail.dataset.detail);
+  if (detail) return openExercise(detail.dataset.detail);
+  /* Exercise-screen actions: swap in an alternate, revert, mark done. */
+  if (view.name === 'exercise') {
+    const useAlt = e.target.closest('[data-swap]');
+    if (useAlt) {
+      swaps[view.exId] = useAlt.dataset.swap;
+      saveSwaps();
+      buzz(10);
+      return render();
+    }
+    if (e.target.closest('[data-swap-revert]')) {
+      delete swaps[view.exId];
+      saveSwaps();
+      buzz(10);
+      return render();
+    }
+    if (e.target.closest('[data-sheet-toggle]')) {
+      if (progress[view.exId]) delete progress[view.exId]; else progress[view.exId] = true;
+      saveProgress();
+      buzz(10);
+      return render();
+    }
+  }
   const heat = e.target.closest('[data-heat]');
   if (heat) {
     const out = $('#heat-detail');
@@ -877,6 +863,9 @@ $('#view').addEventListener('click', e => {
   if (!act) return;
   const day = view.name === 'day' ? plan.find(d => d.id === view.dayId) : null;
   switch (act.dataset.act) {
+    case 'ex-back':
+      view = view.back || { name: 'week' };
+      break;
     case 'edit-order':
       weekEdit = true;
       editOrder = [...order];

@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Modal, View, Text, Pressable, ScrollView, StyleSheet, Image,
-  Animated, Linking, useWindowDimensions,
+  Animated, Linking,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
 import * as Haptics from 'expo-haptics';
 import { Exercise, TagKey } from '../data/plan';
@@ -60,7 +61,6 @@ export default function ExerciseSheet({
   onToggle: () => void;
   onClose: () => void;
 }) {
-  const { height } = useWindowDimensions();
   if (!exercise) return null;
 
   const shownName = swappedName ?? exercise.name;
@@ -70,13 +70,13 @@ export default function ExerciseSheet({
   const demo = demoFor(shownName);
 
   return (
-    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
-      <Pressable style={styles.backdrop} onPress={onClose} />
-      <View style={[styles.sheet, { maxHeight: height * 0.88 }]}>
-        <View style={styles.grab} />
-        <Pressable style={styles.close} onPress={onClose} hitSlop={12}>
-          <Text style={styles.closeText}>✕</Text>
-        </Pressable>
+    <Modal visible={visible} animationType="slide" presentationStyle="fullScreen" onRequestClose={onClose}>
+      <SafeAreaView style={styles.screen} edges={['top']}>
+        <View style={styles.topBar}>
+          <Pressable onPress={onClose} hitSlop={12}>
+            <Text style={styles.backBtn}>‹ Back</Text>
+          </Pressable>
+        </View>
 
         <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
           <Text style={styles.kicker}>{dayName.toUpperCase()} · {sectionTitle.toUpperCase()}</Text>
@@ -183,27 +183,18 @@ export default function ExerciseSheet({
             </Text>
           </Pressable>
         </ScrollView>
-      </View>
+      </SafeAreaView>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  backdrop: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(4,6,9,0.6)' },
-  sheet: {
-    position: 'absolute',
-    left: 0, right: 0, bottom: 0,
-    backgroundColor: C.card,
-    borderTopLeftRadius: 20, borderTopRightRadius: 20,
-    borderWidth: StyleSheet.hairlineWidth, borderColor: C.line,
-    paddingTop: 10,
-  },
-  grab: { width: 40, height: 4, borderRadius: 2, backgroundColor: C.line, alignSelf: 'center', marginBottom: 10 },
-  close: { position: 'absolute', top: 14, right: 16, zIndex: 2, padding: 4 },
-  closeText: { color: C.faint, fontSize: 15, fontWeight: '700' },
-  body: { paddingHorizontal: 20, paddingBottom: 34 },
+  screen: { flex: 1, backgroundColor: C.bg },
+  topBar: { paddingHorizontal: 20, paddingTop: 6, paddingBottom: 10 },
+  backBtn: { color: C.blue, fontSize: 15, fontWeight: '700' },
+  body: { paddingHorizontal: 20, paddingBottom: 44 },
   kicker: { color: C.muted, fontSize: 11, fontWeight: '700', letterSpacing: 1.6 },
-  name: { color: C.ink, fontSize: 21, fontWeight: '800', marginTop: 3, marginBottom: 8, paddingRight: 30 },
+  name: { color: C.ink, fontSize: 25, fontWeight: '800', marginTop: 3, marginBottom: 8 },
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap' },
   dose: { color: C.blue, fontSize: 14, fontWeight: '800', fontVariant: ['tabular-nums'] },
   note: { color: C.muted, fontSize: 13.5, lineHeight: 20, marginTop: 10 },
