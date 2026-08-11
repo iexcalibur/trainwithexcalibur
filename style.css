@@ -106,6 +106,21 @@ h1 { font-size: 30px; font-weight: 800; margin: 2px 0 16px; }
 }
 .glance-head .label { margin: 0; }
 
+.icon-btn-sm {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  color: var(--muted);
+  background: var(--card);
+  border: 1px solid var(--line);
+}
+.icon-btn-sm:active { color: var(--green); border-color: var(--green); }
+
+/* svg inside buttons shouldn't swallow the click target */
+.icon-btn-sm svg { pointer-events: none; }
+
 .reorder { display: flex; flex-direction: column; gap: 10px; }
 .reorder-row { display: flex; align-items: stretch; gap: 10px; }
 .reorder-day {

@@ -3,6 +3,7 @@ import { ScrollView, View, Text, Pressable, StyleSheet } from 'react-native';
 import { dayTotal } from '../data/plan';
 import { useStore } from '../store';
 import ReorderModal from '../components/ReorderModal';
+import Svg, { Path } from 'react-native-svg';
 import Ring from '../components/Ring';
 import { Card, Label } from '../components/ui';
 import { C } from '../theme';
@@ -70,8 +71,17 @@ export default function WeekScreen({ openDay, onSwitchProfile }: { openDay: (id:
 
       <View style={styles.glanceHead}>
         <Label>The week at a glance</Label>
-        <Pressable onPress={() => setEditing(true)} hitSlop={10}>
-          <Text style={styles.editLink}>Edit order</Text>
+        <Pressable
+          onPress={() => setEditing(true)}
+          hitSlop={10}
+          style={styles.editBtn}
+          accessibilityLabel="Edit week order"
+        >
+          <Svg viewBox="0 0 24 24" width={15} height={15}>
+            <Path d="M12 20h9" stroke={C.muted} strokeWidth={2} strokeLinecap="round" />
+            <Path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"
+              stroke={C.muted} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          </Svg>
         </Pressable>
       </View>
       {totals.map(({ day, total, done }) => (
@@ -144,7 +154,11 @@ const styles = StyleSheet.create({
   dayRingLabel: { color: C.muted, fontSize: 10, fontWeight: '800', letterSpacing: 1.2 },
   sectionLabel: { marginTop: 26, marginBottom: 12 },
   glanceHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 26, marginBottom: 12 },
-  editLink: { color: C.blue, fontSize: 13, fontWeight: '700' },
+  editBtn: {
+    width: 30, height: 30, borderRadius: 8,
+    alignItems: 'center', justifyContent: 'center',
+    backgroundColor: C.card, borderWidth: StyleSheet.hairlineWidth, borderColor: C.line,
+  },
   dayCard: { marginBottom: 10, padding: 14 },
   dayCardLeft: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   dayNum: { color: C.green, fontSize: 20, fontWeight: '900', width: 30 },
