@@ -595,6 +595,9 @@ h1 { font-size: 30px; font-weight: 800; margin: 2px 0 16px; }
 .sheet-toggle { width: 100%; padding: 13px 0; font-size: 14.5px; }
 
 /* ---------- floating topper ---------- */
+/* an explicit display beats the [hidden] attribute, so restore it */
+#topper[hidden] { display: none; }
+
 #topper {
   position: fixed;
   top: calc(env(safe-area-inset-top) + 10px);
