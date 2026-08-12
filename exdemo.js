@@ -13,6 +13,11 @@
 const DEMO_BASE = 'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/';
 
 const DEMOS = {
+  "Floor glute bridge, dumbbell on hips": {"d":"Butt_Lift_Bridge","t":"Butt Lift (Bridge)"},
+  "Smith machine hip thrust": {"d":"Smith_Machine_Hip_Raise","t":"Smith Machine Hip Raise"},
+  "Banded standing kickback": {"d":"Hip_Extension_with_Bands","t":"Hip Extension with Bands"},
+  "Quadruped donkey kick": {"d":"Glute_Kickback","t":"Glute Kickback"},
+  "Overhead dumbbell extension": {"d":"Standing_Dumbbell_Triceps_Extension","t":"Standing Dumbbell Triceps Extension"},
   "45° back extension, glute-biased": {"d":"Hyperextensions_Back_Extensions","t":"Hyperextensions (Back Extensions)"},
   "Ab crunch machine": {"d":"Ab_Crunch_Machine","t":"Ab Crunch Machine"},
   "Ankle pogo hops, minimal knee bend": {"d":"Rope_Jumping","t":"Rope Jumping"},
