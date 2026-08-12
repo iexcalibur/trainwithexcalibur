@@ -176,14 +176,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    paddingLeft: 16,
-    paddingRight: 10,
+    /* 4px all round: with a 44px control the circle sits concentric
+       inside the pill's rounded end, so the ring of gap is even. */
+    padding: 4,
     ...chrome,
   },
-  brand: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  brand: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingLeft: 12 },
   brandText: { color: C.ink, fontSize: 12, fontWeight: '800', letterSpacing: 1.6, textTransform: 'uppercase' },
   topperBack: {
-    width: 34, height: 34, borderRadius: 17,
+    width: 42, height: 42, borderRadius: 21,
     backgroundColor: C.card2,
     borderWidth: StyleSheet.hairlineWidth, borderColor: C.line,
     alignItems: 'center', justifyContent: 'center',
@@ -191,12 +192,13 @@ const styles = StyleSheet.create({
   topperBackText: { color: C.ink, fontSize: 20, fontWeight: '700', marginTop: -2 },
   topperTitle: { flex: 1, color: C.ink, fontSize: 14.5, fontWeight: '800' },
   topperAction: {
-    paddingHorizontal: 12, paddingVertical: 8, borderRadius: 999,
+    height: 42, justifyContent: 'center',
+    paddingHorizontal: 16, borderRadius: 999,
     backgroundColor: C.card2,
     borderWidth: StyleSheet.hairlineWidth, borderColor: C.line,
   },
   topperActionText: { color: C.muted, fontSize: 12.5, fontWeight: '700' },
-  topperAvatar: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },
+  topperAvatar: { width: 42, height: 42, borderRadius: 21, alignItems: 'center', justifyContent: 'center' },
   topperAvatarText: { color: '#08110D', fontSize: 14, fontWeight: '900' },
 
   nav: {

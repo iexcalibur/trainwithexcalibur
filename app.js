@@ -605,59 +605,12 @@ function exerciseView() {
         ${swapRows}
       </ul>` : ''}
 
-    <div class="strip-head">
-      <span class="label sheet-h">Images</span>
-      <a class="strip-more" target="_blank" rel="noopener"
-         href="https://www.google.com/search?tbm=isch&q=${q}">Google ↗</a>
-    </div>
-    <div class="img-strip" id="img-strip"><span class="strip-empty">Loading images…</span></div>
-
     <div class="sheet-links">
       <a class="pill blue" target="_blank" rel="noopener"
          href="https://www.youtube.com/results?search_query=${q}+form">▶ Watch tutorial</a>
+      <a class="pill gray" target="_blank" rel="noopener"
+         href="https://www.google.com/search?tbm=isch&q=${q}">🖼 See images</a>
     </div>`;
-}
-
-/* Live image strip: ten openly-licensed results for the shown exercise,
-   fetched fresh every time the screen opens (or a swap changes the name). */
-let stripToken = 0;
-async function loadImageStrip(name) {
-  const token = ++stripToken;
-  if (!document.getElementById('img-strip')) return;
-
-  /* Narrow names often have zero results — fall back to broader queries. */
-  const core = name.split(/[,·—]/)[0].trim();
-  const queries = [...new Set([
-    `${name} exercise`,
-    core,
-    `${core.split(' ').slice(0, 2).join(' ')} exercise`,
-  ])];
-
-  try {
-    let items = [];
-    for (const q of queries) {
-      const r = await fetch(
-        `https://api.openverse.org/v1/images/?q=${encodeURIComponent(q)}&page_size=10`
-      );
-      const j = await r.json();
-      if (token !== stripToken) return;            // a newer screen took over
-      items = (j.results || []).filter(x => x.thumbnail).slice(0, 10);
-      if (items.length) break;
-    }
-    const el = document.getElementById('img-strip');
-    if (!el) return;
-    el.innerHTML = items.length
-      ? items.map(x => `
-          <a href="${x.foreign_landing_url || x.url}" target="_blank" rel="noopener" title="${esc(x.title || '')}">
-            <img src="${x.thumbnail}" loading="lazy" alt="${esc(x.title || name)}"
-                 onerror="this.parentElement.remove()">
-          </a>`).join('')
-      : '<span class="strip-empty">No images found — try the Google link above.</span>';
-  } catch {
-    if (token !== stripToken) return;
-    const el = document.getElementById('img-strip');
-    if (el) el.innerHTML = '<span class="strip-empty">Couldn\'t load images — you may be offline.</span>';
-  }
 }
 
 function openExercise(id) {
@@ -827,15 +780,9 @@ function render() {
   else if (view.name === 'exercise') main.innerHTML = exerciseView();
   else main.innerHTML = historyView();
 
-  /* The exercise screen owns the demo loop and the live image strip. */
-  if (view.name === 'exercise') {
-    startDemoLoop();
-    const [dayId, si, ii] = view.exId.split('-');
-    const it = plan.find(d => d.id === dayId).sections[+si].items[+ii];
-    loadImageStrip(swaps[view.exId] || it.name);
-  } else {
-    stopDemoLoop();
-  }
+  /* The exercise screen owns the demo loop. */
+  if (view.name === 'exercise') startDemoLoop();
+  else stopDemoLoop();
 
   /* Heatmap opens showing the most recent weeks. */
   const heatScroll = $('.heat-scroll');
