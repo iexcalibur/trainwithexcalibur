@@ -109,7 +109,7 @@ function Root() {
 
       {/* Floating pill nav */}
       <BlurView intensity={50} tint="dark" blurMethod="dimezisBlurViewSdk31Plus"
-        style={[styles.nav, { bottom: insets.bottom + 12 }]}>
+        style={[styles.nav, { bottom: Math.max(12, insets.bottom - 16) }]}>
         {tabs.map(t => {
           const activeTab = !openedDay && tab === t.key;
           return (

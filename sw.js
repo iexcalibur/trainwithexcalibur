@@ -1,5 +1,5 @@
 /* Training Week PWA — offline-first service worker */
-const CACHE = 'twpwa-v21';
+const CACHE = 'twpwa-v22';
 const MEDIA = 'twpwa-media-v1';
 const DEMO_HOST = 'cdn.jsdelivr.net';
 const ASSETS = [

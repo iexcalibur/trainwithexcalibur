@@ -674,7 +674,8 @@ h1 { font-size: 30px; font-weight: 800; margin: 2px 0 16px; }
 /* ---------- floating bottom nav (Instagram-style pill) ---------- */
 .bottom-nav {
   position: fixed;
-  bottom: calc(env(safe-area-inset-bottom) + 12px);
+  /* Docked float: hug the edge, riding just above the home indicator. */
+  bottom: max(12px, calc(env(safe-area-inset-bottom) - 16px));
   left: 50%;
   transform: translateX(-50%);
   width: calc(min(560px, 100vw) - 32px);
