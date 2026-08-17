@@ -790,6 +790,10 @@ function render() {
 
   if (weekEdit) setupReorderDrag();
 
+  /* Session-active dot on the Today tab, matching the native app. */
+  const todayIcon = document.querySelector('[data-nav="today"] .nav-icon');
+  if (todayIcon) todayIcon.textContent = active ? '▶ ·' : '▶';
+
   document.querySelectorAll('.bottom-nav button').forEach(b => {
     const key = b.dataset.nav;
     const activeTab = (view.name === 'week' && key === 'week')

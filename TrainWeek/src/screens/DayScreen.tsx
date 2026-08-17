@@ -150,6 +150,7 @@ export default function DayScreen({ dayId }: { dayId: string }) {
         visible={sheet !== null}
         exercise={sheet?.ex ?? null}
         dayName={day.name}
+        dayFocus={day.focus}
         sectionTitle={sheet?.section ?? ''}
         sectionTag={sheet?.tag}
         checked={sheet ? !!progress[sheet.id] : false}

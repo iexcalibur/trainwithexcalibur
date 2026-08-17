@@ -26,8 +26,7 @@ export default function LoginScreen() {
       ))}
 
       <Text style={styles.note}>
-        Progress, sessions and history are saved separately for each profile, on this device.
-        They stay until you delete the app.
+        Progress, sessions and history are saved separately for each profile on this device.
       </Text>
     </ScrollView>
   );

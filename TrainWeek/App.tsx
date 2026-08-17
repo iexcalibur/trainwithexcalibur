@@ -86,7 +86,7 @@ function Root() {
               <Brand />
             )}
             <Text style={styles.topperTitle} numberOfLines={1}>
-              {openedDay ? currentDay.name : ''}
+              {currentDay.name}
             </Text>
             <Pressable style={styles.topperAction} onPress={confirmReset} hitSlop={8}>
               <Text style={styles.topperActionText}>Reset</Text>

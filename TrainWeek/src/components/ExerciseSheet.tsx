@@ -3,7 +3,8 @@ import {
   Modal, View, Text, Pressable, ScrollView, StyleSheet, Image,
   Animated, Linking,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { BlurView } from 'expo-blur';
 import { WebView } from 'react-native-webview';
 import * as Haptics from 'expo-haptics';
 import { Exercise, TagKey } from '../data/plan';
@@ -47,12 +48,13 @@ function FrameLoop({ frames, name }: { frames: [string, string]; name: string })
 }
 
 export default function ExerciseSheet({
-  visible, exercise, dayName, sectionTitle, sectionTag, checked,
+  visible, exercise, dayName, dayFocus, sectionTitle, sectionTag, checked,
   swappedName, onSwap, onToggle, onClose,
 }: {
   visible: boolean;
   exercise: Exercise | null;
   dayName: string;
+  dayFocus: string;
   sectionTitle: string;
   sectionTag?: TagKey;
   checked: boolean;
@@ -61,6 +63,7 @@ export default function ExerciseSheet({
   onToggle: () => void;
   onClose: () => void;
 }) {
+  const insets = useSafeAreaInsets();
   if (!exercise) return null;
 
   const shownName = swappedName ?? exercise.name;
@@ -71,26 +74,11 @@ export default function ExerciseSheet({
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="fullScreen" onRequestClose={onClose}>
-      <SafeAreaView style={styles.screen} edges={['top']}>
-        <View style={styles.topBar}>
-          <Pressable onPress={onClose} hitSlop={12}>
-            <Text style={styles.backBtn}>‹ Back</Text>
-          </Pressable>
-          <View style={{ flex: 1 }} />
-          <Pressable
-            style={[styles.doneTop, checked && styles.doneTopChecked]}
-            onPress={() => {
-              onToggle();
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-            }}
-          >
-            <Text style={[styles.doneTopText, checked && { color: C.green }]}>
-              {checked ? '✓ Done' : 'Mark done'}
-            </Text>
-          </Pressable>
-        </View>
-
-        <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
+      <View style={styles.screen}>
+        <ScrollView
+          contentContainerStyle={[styles.body, { paddingTop: insets.top + 74 }]}
+          showsVerticalScrollIndicator={false}
+        >
           <Text style={styles.kicker}>{dayName.toUpperCase()} · {sectionTitle.toUpperCase()}</Text>
           <Text style={styles.name}>{shownName}</Text>
           <View style={styles.metaRow}>
@@ -183,16 +171,61 @@ export default function ExerciseSheet({
             </Pressable>
           </View>
         </ScrollView>
-      </SafeAreaView>
+
+        {/* Floating topper: round back · day focus · Mark done — same as the PWA */}
+        <BlurView intensity={50} tint="dark" blurMethod="dimezisBlurViewSdk31Plus"
+          style={[styles.topper, { top: insets.top + 10 }]}>
+          <Pressable style={styles.topperBack} onPress={onClose} hitSlop={8} accessibilityLabel="Back">
+            <Text style={styles.topperBackText}>‹</Text>
+          </Pressable>
+          <Text style={styles.topperTitle} numberOfLines={1}>{dayFocus}</Text>
+          <Pressable
+            style={[styles.doneTop, checked && styles.doneTopChecked]}
+            onPress={() => {
+              onToggle();
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+            }}
+          >
+            <Text style={[styles.doneTopText, checked && { color: C.green }]}>
+              {checked ? '✓ Done' : 'Mark done'}
+            </Text>
+          </Pressable>
+        </BlurView>
+      </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: C.bg },
-  topBar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingTop: 6, paddingBottom: 10 },
-  backBtn: { color: C.blue, fontSize: 15, fontWeight: '700' },
-  doneTop: { backgroundColor: C.green, borderRadius: 999, paddingHorizontal: 16, paddingVertical: 9 },
+  topper: {
+    position: 'absolute',
+    left: 16, right: 16,
+    height: 52,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    padding: 4,
+    backgroundColor: 'rgba(21, 26, 33, 0.55)',
+    borderRadius: 999,
+    overflow: 'hidden',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: C.line,
+    shadowColor: '#000',
+    shadowOpacity: 0.45,
+    shadowRadius: 15,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 12,
+  },
+  topperBack: {
+    width: 42, height: 42, borderRadius: 21,
+    backgroundColor: C.card2,
+    borderWidth: StyleSheet.hairlineWidth, borderColor: C.line,
+    alignItems: 'center', justifyContent: 'center',
+  },
+  topperBackText: { color: C.ink, fontSize: 20, fontWeight: '700', marginTop: -2 },
+  topperTitle: { flex: 1, color: C.ink, fontSize: 14.5, fontWeight: '800' },
+  doneTop: { backgroundColor: C.green, borderRadius: 999, height: 42, justifyContent: 'center', paddingHorizontal: 16 },
   doneTopChecked: {
     backgroundColor: C.card2,
     borderWidth: StyleSheet.hairlineWidth, borderColor: C.line,
