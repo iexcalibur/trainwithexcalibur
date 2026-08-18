@@ -53,6 +53,14 @@ const SAKSHI_PLAN = [
         ],
         note: 'Progression: when you hit the top of the rep range on all sets with clean form, add the smallest increment next session.',
       },
+      {
+        title: 'Anti-tilt core', meta: 'pelvis neutral, ribs stacked',
+        items: [
+          { name: 'Dead bug with heel slide', note: 'Low back stays pressed into the floor as the heel slides away.', dose: '2 × 8ea' },
+          { name: 'Reverse crunch', note: 'Curl the pelvis rather than swinging the legs.', dose: '2 × 10' },
+          { name: 'RKC plank', note: 'Ribs down, glutes squeezed hard; shorter and harder than a normal plank.', dose: '2 × 15–20s' },
+        ],
+      },
       { title: 'Cool-down', meta: 'hold 20–30 sec, breathe slowly, no bouncing', items: SAKSHI_UPPER_COOL },
     ],
     cut: 'Cut in this order: bicep curl → triceps pushdown. The presses and the pulls are the session.',
@@ -73,6 +81,14 @@ const SAKSHI_PLAN = [
           { name: 'Walking lunge', dose: '2 × 10ea' },
           { name: 'Calf raise', dose: '3 × 15' },
           { name: 'Cable crunch or hanging knee raise', dose: '3 × 12' },
+        ],
+      },
+      {
+        title: 'Posterior control', meta: 'pelvic tilt under load',
+        items: [
+          { name: '90/90 hip lift with ball squeeze', note: 'Exhale fully at the top; hamstrings working, low back quiet.', dose: '2 × 5 breaths' },
+          { name: 'Glute bridge with posterior tilt', note: 'Tuck the pelvis first, then lift; 3s hold at the top.', dose: '2 × 10' },
+          { name: 'Kneeling hip flexor stretch with posterior tilt', note: 'Tilt before you shift forward — the tilt is the stretch.', dose: '60s ea' },
         ],
       },
       { title: 'Cool-down', meta: 'hold 20–30 sec, breathe slowly, no bouncing', items: SAKSHI_LOWER_COOL },
@@ -97,6 +113,14 @@ const SAKSHI_PLAN = [
           { name: 'Overhead triceps extension', dose: '2 × 12' },
         ],
       },
+      {
+        title: 'Mobility + rib position', meta: 'open the front line, stack the ribs',
+        items: [
+          { name: 'Couch stretch with posterior tilt', note: 'Tuck the pelvis hard; back off if the low back arches.', dose: '60s ea' },
+          { name: 'Thoracic extension over roller, upper back only', dose: '45s' },
+          { name: 'Wall angel, ribs down', note: 'Low back stays on the wall through the whole slide.', dose: '2 × 8' },
+        ],
+      },
       { title: 'Cool-down', meta: 'hold 20–30 sec, breathe slowly, no bouncing', items: SAKSHI_UPPER_COOL },
     ],
     cut: 'Cut in this order: hammer curl → overhead triceps extension.',
@@ -117,6 +141,14 @@ const SAKSHI_PLAN = [
           { name: 'Leg extension', dose: '3 × 12' },
           { name: 'Standing calf raise', dose: '3 × 15' },
           { name: 'Side plank', dose: '3 × 20–30s ea' },
+        ],
+      },
+      {
+        title: 'Standing integration', meta: 'neutral pelvis under real load',
+        items: [
+          { name: 'Suitcase carry, pelvis neutral', note: 'One moderate DB; no lean, no hip hike.', dose: '2 × 20m ea' },
+          { name: 'Standing band march, tall', dose: '2 × 10ea' },
+          { name: 'Wall sit with posterior tilt', note: 'Flatten the low back into the wall and hold it there.', dose: '2 × 20–30s' },
         ],
       },
       { title: 'Cool-down', meta: 'hold 20–30 sec, breathe slowly, no bouncing', items: SAKSHI_LOWER_COOL },
