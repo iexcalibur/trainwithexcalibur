@@ -72,6 +72,15 @@ export const PLAN: Day[] = [
         ],
       },
       {
+        title: 'Posterior control', meta: 'pelvic tilt under load, 8 min',
+        items: [
+          { name: '90/90 hip lift with ball squeeze', note: 'Exhale fully at the top; hamstrings working, low back quiet.', dose: '3 × 5 breaths' },
+          { name: 'Glute bridge with posterior tilt', note: 'Tuck the pelvis first, then lift; 3s hold at the top.', dose: '3 × 12' },
+          { name: 'Kneeling hip flexor stretch with posterior tilt', note: 'Tilt before you shift forward — the tilt is the stretch.', dose: '90s ea' },
+        ],
+        note: 'The hip thrust above already covers the loaded version — just keep the ribs pulled down.',
+      },
+      {
         title: 'Cool-down', meta: '2 min easy walk, then hold and breathe',
         items: [
           { name: 'Standing quad stretch', dose: '30s ea' },
@@ -136,6 +145,15 @@ export const PLAN: Day[] = [
         ],
       },
       {
+        title: 'Anti-tilt core', meta: 'pelvis neutral, ribs stacked',
+        items: [
+          { name: 'Dead bug with heel slide', note: 'Low back stays pressed into the floor as the heel slides away.', dose: '3 × 8ea' },
+          { name: 'Reverse crunch', note: 'Curl the pelvis rather than swinging the legs.', dose: '3 × 12' },
+          { name: 'RKC plank', note: 'Ribs down, glutes squeezed hard; shorter and harder than a normal plank.', dose: '3 × 20–30s' },
+          { name: '90/90 wall press, feet on the wall', note: 'Press the heels into the wall, exhale fully, low back heavy on the floor.', dose: '3 × 20s' },
+        ],
+      },
+      {
         title: 'Cool-down', meta: 'holds and release',
         items: [
           { name: 'Doorway pec · overhead triceps · kneeling lat on a bench', dose: '30s ea' },
@@ -187,6 +205,15 @@ export const PLAN: Day[] = [
           { name: 'Side plank with a dumbbell on the top hip', dose: '3 × 20–40s ea' },
           { name: 'Cable lateral hold', note: 'Stand side-on and simply resist the pull.', dose: '3 × 20–30s ea' },
           { name: "Farmer's carry, two dumbbells", tags: ['optional'], dose: '3 × 40m' },
+        ],
+      },
+      {
+        title: 'Hip flexor strength', meta: 'top range, above 90°',
+        items: [
+          { name: 'Supine banded psoas march', note: 'Band around the feet; pull one knee past 90° without the back arching.', dose: '3 × 10ea' },
+          { name: 'Seated knee lift-off above 90°', note: 'Sit tall, hands off; lift the knee from the hip alone and hold a beat.', dose: '3 × 10ea' },
+          { name: 'Standing banded knee drive', dose: '3 × 12ea' },
+          { name: "Hanging or captain's-chair knee raise", note: 'Curl the pelvis at the top; no swinging.', dose: '3 × 8–12' },
         ],
       },
       {
@@ -253,6 +280,16 @@ export const PLAN: Day[] = [
         ],
       },
       {
+        title: 'Mobility + rib position', meta: 'open the front line, stack the ribs',
+        items: [
+          { name: 'Couch stretch with posterior tilt', note: 'Tuck the pelvis hard; back off if the low back arches.', dose: '90s ea' },
+          { name: 'Half-kneeling hip flexor with overhead reach', dose: '60s ea' },
+          { name: 'Rectus femoris stretch', note: 'Heel toward the glute in half-kneeling — the two-joint quad.', dose: '60s ea' },
+          { name: 'Thoracic extension over roller, upper back only', dose: '45s' },
+          { name: 'Wall angel, ribs down', note: 'Low back stays on the wall through the whole slide.', dose: '2 × 10' },
+        ],
+      },
+      {
         title: 'Cool-down', meta: 'holds and long-chain work',
         items: [
           { name: 'Cross-body rear delt · doorway pec · overhead triceps · upper trap', dose: '30s ea' },
@@ -316,6 +353,15 @@ export const PLAN: Day[] = [
           { name: 'Cable crunch', tags: ['physio'], note: 'Ribs toward hips; arms hold the rope, abs move the weight.', dose: '3 × 12–15' },
           { name: 'Ab crunch machine', tags: ['physio', 'optional'], dose: '3 × 12–15' },
           { name: 'Hollow hold or plank to finish', dose: '3 × 30–45s' },
+        ],
+      },
+      {
+        title: 'Standing integration', meta: 'neutral pelvis under real load',
+        items: [
+          { name: 'Suitcase carry, pelvis neutral', note: 'One heavy DB; no lean, no hip hike.', dose: '3 × 30m ea' },
+          { name: 'Standing band march, tall', dose: '3 × 12ea' },
+          { name: 'Split squat with deliberate posterior tilt', note: 'Tuck the pelvis before you drop; keep it through the rep.', dose: '2 × 8ea' },
+          { name: 'Wall sit with posterior tilt', note: 'Flatten the low back into the wall and hold it there.', dose: '3 × 30s' },
         ],
       },
       {

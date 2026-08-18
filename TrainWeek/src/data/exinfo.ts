@@ -135,6 +135,28 @@ export const EXINFO: Record<string, ExInfo> = {
   'Overhead triceps · biceps stretch, palm flat on a wall behind you': { m: ['triceps', 'biceps'], alt: ['Towel triceps stretch', 'Doorway biceps stretch', 'Wall forearm rotation stretch'] },
   'Wrist flexor stretch': { m: ['wrists', 'forearms'], alt: ['Prayer stretch', 'Reverse prayer stretch', 'Fingers-down wall stretch'] },
   'Foam roll lats, quads, calves': { m: ['lats', 'quads', 'calves'], alt: ['Massage-gun pass, light', 'Stick roller', 'Lacrosse-ball targeted spots'] },
+
+  /* ---------------- Pelvic-tilt corrective blocks ---------------- */
+  '90/90 hip lift with ball squeeze': { m: ['glutes', 'hamstrings', 'core'], alt: ['Glute bridge with posterior tilt', '90/90 breathing, no ball', 'Frog pump'] },
+  'Glute bridge with posterior tilt': { m: ['glutes', 'hamstrings', 'core'], alt: ['Floor glute bridge, dumbbell on hips', 'Single-leg glute bridge', 'Frog pump'] },
+  'Kneeling hip flexor stretch with posterior tilt': { m: ['hip-flexors', 'quads'], alt: ['Couch stretch with posterior tilt', 'Half-kneeling hip flexor with overhead reach', 'Standing hip flexor lean'] },
+  'Dead bug with heel slide': { m: ['abs', 'core'], alt: ['Dumbbell dead bug', 'Bodyweight dead bug', 'Bird dog'] },
+  'Reverse crunch': { m: ['lower-abs'], alt: ['Reverse crunch on a bench', 'Dead bug with heel slide', 'Lying bent-knee leg raise'] },
+  'RKC plank': { m: ['core', 'abs', 'glutes'], alt: ['Standard plank, shorter hold', 'Body saw', 'Hollow hold'] },
+  '90/90 wall press, feet on the wall': { m: ['core', 'lower-abs'], alt: ['90/90 hip lift with ball squeeze', 'Dead bug with heel slide', 'Posterior tilt hold on the floor'] },
+  'Supine banded psoas march': { m: ['hip-flexors', 'core'], alt: ['Banded hip flexor march', 'Lying psoas march, no band', 'Dead bug with heel slide'] },
+  'Seated knee lift-off above 90°': { m: ['hip-flexors'], alt: ['Standing banded knee drive', 'Standing knee raise hold', 'Seated march, slow'] },
+  'Standing banded knee drive': { m: ['hip-flexors', 'core', 'balance'], alt: ['Banded hip flexor march', 'Standing band march, tall', 'High knee march, slow'] },
+  "Hanging or captain's-chair knee raise": { m: ['lower-abs', 'hip-flexors', 'grip'], alt: ["Captain's-chair knee raise", 'Reverse crunch', 'Lying leg raise, dumbbell between the feet'] },
+  'Couch stretch with posterior tilt': { m: ['hip-flexors', 'quads'], alt: ['Kneeling hip flexor stretch with posterior tilt', 'Rectus femoris stretch', 'Standing quad stretch'] },
+  'Half-kneeling hip flexor with overhead reach': { m: ['hip-flexors', 'lats', 'mobility'], alt: ['Lunge with overhead reach', "World's greatest stretch", 'Standing side bend, arm overhead'] },
+  'Rectus femoris stretch': { m: ['quads', 'hip-flexors'], alt: ['Couch stretch with posterior tilt', 'Standing quad stretch', 'Prone quad pull with strap'] },
+  'Thoracic extension over roller, upper back only': { m: ['t-spine', 'upper-back'], alt: ['Cat-cow, slow', 'Wall thoracic rotation', 'Bench t-spine mobilization'] },
+  'Wall angel, ribs down': { m: ['t-spine', 'rotator-cuff', 'upper-back'], alt: ['Wall slides', 'Prone Y-T-W raises', 'Band dislocates'] },
+  'Suitcase carry, pelvis neutral': { m: ['obliques', 'core', 'grip'], alt: ['Suitcase carry', 'Offset kettlebell carry', 'Side plank'] },
+  'Standing band march, tall': { m: ['hip-flexors', 'core', 'balance'], alt: ['Standing banded knee drive', 'Banded hip flexor march', 'Overhead dumbbell march'] },
+  'Split squat with deliberate posterior tilt': { m: ['quads', 'glutes'], alt: ['Static split squat', 'Dumbbell Bulgarian split squat', 'Dumbbell reverse lunge'] },
+  'Wall sit with posterior tilt': { m: ['quads', 'core'], alt: ['Spanish squat isometric, heavy band behind the knees', 'Wall sit, long hold', 'Leg extension iso hold'] },
 };
 
 /* ---------------- Sakshi · Phase 2 (Upper/Lower split) ---------------- */
