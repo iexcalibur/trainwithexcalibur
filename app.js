@@ -443,7 +443,7 @@ function dayView(dayId, withBack) {
 
     <div class="card cut-card">
       <span class="label">Short on time?</span>
-      <p>${esc(day.cut.replace(/^Short on time — /, ''))}</p>
+      <p>${esc(day.cut)}</p>
     </div>`;
 }
 

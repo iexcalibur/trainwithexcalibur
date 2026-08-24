@@ -21,15 +21,15 @@ const PLAN = [
         title: 'Main lifts', meta: 'heavy hip extension is folded in here',
         items: [
           { name: 'Leg press', tags: ['physio'], note: 'Full foot on the platform. Stop before your lower back lifts off the pad.', dose: '3 × 10–15' },
-          { name: 'Hip thrust, dumbbell or barbell', tags: ['hipext'], note: 'Heels, ribs down, squeeze at the top.', dose: '4 × 8–12' },
+          { name: 'Floor glute bridge, dumbbell on hips', tags: ['hipext'], note: 'Heels close to the hips, ribs down, hard 2s squeeze at the top.', dose: '4 × 12–15' },
           { name: 'Leg extension', dose: '3 × 12–15' },
           { name: 'Seated leg curl', dose: '3 × 12–15' },
-          { name: 'Dumbbell Bulgarian split squat', note: 'Shorten the range if the hip pinches.', dose: '3 × 8–10ea' },
-          { name: 'Cable kickback', tags: ['hipext'], dose: '3 × 12–15ea' },
+          { name: 'Dumbbell walking lunge', note: 'Shorten the stride if the hip pinches.', dose: '3 × 8–10ea' },
+          { name: 'Banded standing kickback', tags: ['hipext'], dose: '3 × 12–15ea' },
           { name: 'Single-leg calf raise', tags: ['joints'], note: 'Unilateral fixes the side-to-side gap a machine hides.', dose: '3 × 12ea' },
           { name: 'Frog pump finisher', tags: ['hipext', 'optional'], dose: '2 × 20' },
         ],
-        note: 'Heavy-glute swap-ins if a machine is taken or you want variety: glute drive machine 3 × 10–12, or single-leg hip thrust 3 × 10 each.',
+        note: 'Heavy-glute swap-ins if you want variety: single-leg glute bridge 3 × 10–12 each, or 45° back extension 3 × 12–15.',
       },
       {
         title: 'Abs', meta: 'anti-extension (front core)',
@@ -46,7 +46,7 @@ const PLAN = [
           { name: 'Glute bridge with posterior tilt', note: 'Tuck the pelvis first, then lift; 3s hold at the top.', dose: '3 × 12' },
           { name: 'Kneeling hip flexor stretch with posterior tilt', note: 'Tilt before you shift forward — the tilt is the stretch.', dose: '90s ea' },
         ],
-        note: 'The hip thrust above already covers the loaded version — just keep the ribs pulled down.',
+        note: 'The dumbbell glute bridge above is the loaded version — keep the ribs pulled down there too.',
       },
       {
         title: 'Cool-down', meta: '2 min easy walk, then hold and breathe',
@@ -59,7 +59,7 @@ const PLAN = [
         ],
       },
     ],
-    cut: 'Short on time — cut in this order: frog pump → Bulgarian split squat → cable kickback. Leg press, hip thrust and leg curl are the ones that matter.',
+    cut: 'Cut in this order: frog pump → walking lunge → banded kickback. Leg press, glute bridge and leg curl are the ones that matter.',
   },
 
   {
@@ -130,7 +130,7 @@ const PLAN = [
         ],
       },
     ],
-    cut: 'Short on time — cut in this order: banded glute bridge → chest dips → the chop. Keep the full ankle block — it is the gap this day exists to close.',
+    cut: 'Cut in this order: banded glute bridge → chest dips → the chop. Keep the full ankle block — it is the gap this day exists to close.',
   },
 
   {
@@ -195,7 +195,7 @@ const PLAN = [
         ],
       },
     ],
-    cut: "Short on time — cut in this order: farmer's carry → reverse Nordic → med-ball pass. Never cut the pulldown, chest-supported row or straight-arm pulldown — they are the V-taper.",
+    cut: "Cut in this order: farmer's carry → reverse Nordic → med-ball pass. Never cut the pulldown, chest-supported row or straight-arm pulldown — they are the V-taper.",
   },
 
   {
@@ -267,7 +267,7 @@ const PLAN = [
         ],
       },
     ],
-    cut: 'Short on time — cut in this order: shrugs → single-leg glute bridge → reverse lunge. Both lateral raises stay — they are the highest-value movement for shoulder width.',
+    cut: 'Cut in this order: shrugs → single-leg glute bridge → reverse lunge. Both lateral raises stay — they are the highest-value movement for shoulder width.',
   },
 
   {
@@ -304,7 +304,7 @@ const PLAN = [
         ],
         callout: {
           title: 'Until hinging is cleared',
-          body: 'Swap the three gated lines for: hip thrust 3 × 10–12 and cable kickback 3 × 12–15 each. You lose very little — thrusts are a top-tier glute builder and they do not load the spine in flexion.',
+          body: 'Swap the three gated lines for: floor glute bridge with a dumbbell 3 × 12–15 and banded standing kickback 3 × 12–15 each. You lose very little — loaded bridges are still a top-tier glute builder and they do not load the spine in flexion.',
         },
       },
       {
@@ -343,6 +343,6 @@ const PLAN = [
         ],
       },
     ],
-    cut: 'Short on time — cut in this order: hammer curl → ab crunch machine → cable pull-through.',
+    cut: 'Cut in this order: hammer curl → ab crunch machine → cable pull-through.',
   },
 ];

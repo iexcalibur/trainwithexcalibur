@@ -136,6 +136,11 @@ const EXINFO = {
   'Wrist flexor stretch': { m: ['wrists', 'forearms'], alt: ['Prayer stretch', 'Reverse prayer stretch', 'Fingers-down wall stretch'] },
   'Foam roll lats, quads, calves': { m: ['lats', 'quads', 'calves'], alt: ['Massage-gun pass, light', 'Stick roller', 'Lacrosse-ball targeted spots'] },
 
+  /* ---------------- Equipment-light main-lift stand-ins ---------------- */
+  'Floor glute bridge, dumbbell on hips': { m: ['glutes', 'hamstrings'], alt: ['Single-leg glute bridge', '45° back extension, glute-biased', 'Frog pump', 'Smith machine hip thrust'] },
+  'Banded standing kickback': { m: ['glutes'], alt: ['Quadruped donkey kick', 'Single-leg glute bridge', '45° back extension, glute-biased'] },
+  'Dumbbell walking lunge': { m: ['quads', 'glutes', 'balance'], alt: ['Dumbbell reverse lunge', 'Static split squat', 'Step-up, knee-height box'] },
+
   /* ---------------- Pelvic-tilt corrective blocks ---------------- */
   '90/90 hip lift with ball squeeze': { m: ['glutes', 'hamstrings', 'core'], alt: ['Glute bridge with posterior tilt', '90/90 breathing, no ball', 'Frog pump'] },
   'Glute bridge with posterior tilt': { m: ['glutes', 'hamstrings', 'core'], alt: ['Floor glute bridge, dumbbell on hips', 'Single-leg glute bridge', 'Frog pump'] },

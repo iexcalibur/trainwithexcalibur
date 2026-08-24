@@ -18,6 +18,7 @@ const DEMOS = {
   "Banded standing kickback": {"d":"Hip_Extension_with_Bands","t":"Hip Extension with Bands"},
   "Quadruped donkey kick": {"d":"Glute_Kickback","t":"Glute Kickback"},
   "Overhead dumbbell extension": {"d":"Standing_Dumbbell_Triceps_Extension","t":"Standing Dumbbell Triceps Extension"},
+  "Dumbbell walking lunge": {"d":"Dumbbell_Lunges","t":"Dumbbell Lunges"},
   "Glute bridge with posterior tilt": {"d":"Butt_Lift_Bridge","t":"Butt Lift (Bridge)"},
   "Kneeling hip flexor stretch with posterior tilt": {"d":"Kneeling_Hip_Flexor","t":"Kneeling Hip Flexor"},
   "Dead bug with heel slide": {"d":"Dead_Bug","t":"Dead Bug"},

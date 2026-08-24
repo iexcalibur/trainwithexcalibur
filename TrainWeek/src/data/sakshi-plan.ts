@@ -78,7 +78,7 @@ export const SAKSHI_PLAN: Day[] = [
         title: 'Main lifts', meta: 'rest 90 sec between sets',
         items: [
           { name: 'Goblet or dumbbell squat', dose: '3 × 8–12' },
-          { name: 'Dumbbell Romanian deadlift', note: 'Hips back, dumbbells close to the legs, feel the hamstrings stretch.', dose: '3 × 10' },
+          { name: '45° back extension, glute-biased', note: 'Hips pressed into the pad, squeeze the glutes at the top.', dose: '3 × 12' },
           { name: 'Leg press', dose: '3 × 12' },
           { name: 'Walking lunge', dose: '2 × 10ea' },
           { name: 'Calf raise', dose: '3 × 15' },
@@ -95,7 +95,7 @@ export const SAKSHI_PLAN: Day[] = [
       },
       { title: 'Cool-down', meta: 'hold 20–30 sec, breathe slowly, no bouncing', items: LOWER_COOL },
     ],
-    cut: 'Cut in this order: walking lunge → calf raise. Squat, RDL and leg press stay.',
+    cut: 'Cut in this order: walking lunge → calf raise. Squat, back extension and leg press stay.',
   },
 
   {
