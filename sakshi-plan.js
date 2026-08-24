@@ -128,14 +128,14 @@ const SAKSHI_PLAN = [
 
   {
     id: 'fri', num: '04', name: 'Friday', short: 'FRI', focus: 'Lower B',
-    subtitle: 'Hip thrust · single-leg · hamstrings · core',
+    subtitle: 'Glute bridge · single-leg · hamstrings · core',
     time: '45–60 min', target: [45, 60],
     sections: [
       { title: 'Prep', meta: 'dynamic warm-up + activation, 8–10 min', items: SAKSHI_LOWER_PREP },
       {
         title: 'Main lifts', meta: 'rest 90 sec between sets',
         items: [
-          { name: 'Hip thrust, dumbbell or barbell', note: 'Heels down, ribs down, squeeze at the top.', dose: '3 × 10' },
+          { name: 'Floor glute bridge, dumbbell on hips', note: 'Heels close to the hips, ribs down, hard 2s squeeze at the top.', dose: '3 × 12' },
           { name: 'Bulgarian split squat or leg press', dose: '3 × 10' },
           { name: 'Leg curl, seated or lying', dose: '3 × 12' },
           { name: 'Leg extension', dose: '3 × 12' },
@@ -153,6 +153,6 @@ const SAKSHI_PLAN = [
       },
       { title: 'Cool-down', meta: 'hold 20–30 sec, breathe slowly, no bouncing', items: SAKSHI_LOWER_COOL },
     ],
-    cut: 'Cut in this order: leg extension → standing calf raise. Hip thrust stays.',
+    cut: 'Cut in this order: leg extension → standing calf raise. Glute bridge stays.',
   },
 ];
