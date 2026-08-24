@@ -619,9 +619,97 @@ function openExercise(id) {
   render();
 }
 
+/* ---------------- muscle library ---------------- */
+
+/* Library home groups the muscle dictionary into browsable regions. */
+const LIB_GROUPS = [
+  ['Chest & shoulders', ['chest', 'upper-chest', 'side-delts', 'front-delts', 'rear-delts', 'rotator-cuff']],
+  ['Back', ['traps', 'upper-back', 'lats', 'lower-back']],
+  ['Arms', ['biceps', 'triceps', 'forearms', 'grip', 'wrists']],
+  ['Core', ['abs', 'lower-abs', 'obliques', 'core']],
+  ['Glutes & hips', ['glutes', 'glute-med', 'adductors', 'hip-flexors', 'hips']],
+  ['Legs', ['quads', 'hamstrings', 'calves', 'tibialis', 'achilles']],
+  ['Joints, balance & recovery', ['ankle', 'knee', 'balance', 'plantar-fascia', 't-spine', 'mobility', 'elastic', 'cardio']],
+];
+
+function libraryView() {
+  const count = k => Object.keys(EXINFO).filter(n => (EXINFO[n].m || []).includes(k)).length;
+  return `
+    <span class="label">Knowledge base · ${Object.keys(EXINFO).length} movements</span>
+    <h1>Library</h1>
+    ${LIB_GROUPS.map(([title, keys]) => `
+      <span class="label sheet-h">${title}</span>
+      <div class="chips lib-chips">
+        ${keys.map(k => `
+          <button class="chip lib-chip" data-lib-muscle="${k}">
+            ${MUSCLES[k]}<span class="lib-n">${count(k)}</span>
+          </button>`).join('')}
+      </div>`).join('')}`;
+}
+
+function libraryMuscleView() {
+  const mkey = view.muscle;
+  const list = Object.keys(EXINFO)
+    .filter(n => (EXINFO[n].m || []).includes(mkey))
+    .sort((a, b) => {
+      const pa = EXINFO[a].m[0] === mkey ? 0 : 1;
+      const pb = EXINFO[b].m[0] === mkey ? 0 : 1;
+      return pa - pb || a.localeCompare(b);
+    });
+  const rows = list.map(n => `
+    <button class="lib-row" data-lib-ex="${esc(n)}">
+      <span class="lib-row-body">
+        <span class="lib-row-name">${esc(n)}${EXINFO[n].m[0] === mkey ? '' : '<span class="lib-sec">secondary</span>'}</span>
+        <span class="lib-row-eq">${(equipFor(n).map(k => EQUIP[k] || k).join(' · ')) || 'Bodyweight / floor'}</span>
+      </span>
+      <span class="chev">›</span>
+    </button>`).join('');
+  return `
+    <span class="label">Library</span>
+    <h1>${MUSCLES[mkey] || mkey}</h1>
+    <p class="lib-count">${list.length} movement${list.length === 1 ? '' : 's'} in the knowledge base</p>
+    <div class="lib-list">${rows}</div>`;
+}
+
+/* Standalone exercise page: pure knowledge, no plan coupling —
+   no dose, no Mark done, no swap. Alternates that live in the
+   library link onward; the rest fall back to an image search. */
+function libraryExerciseView() {
+  const name = view.ex;
+  const info = EXINFO[name] || { m: ['mobility'], alt: [] };
+  const eq = equipFor(name);
+  const q = encodeURIComponent(name + ' exercise');
+  const altRows = (info.alt || []).map(a => EXINFO[a]
+    ? `<li><button class="lib-alt-link" data-lib-ex="${esc(a)}">${esc(a)}<span class="chev">›</span></button></li>`
+    : `<li><a href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(a + ' exercise')}"
+           target="_blank" rel="noopener">${esc(a)}<span class="alt-go">🖼</span></a></li>`).join('');
+  return `
+    <span class="label">Library · ${MUSCLES[info.m[0]] || ''}</span>
+    <h2 class="sheet-name ex-page-name">${esc(name)}</h2>
+
+    <span class="label sheet-h">Equipment</span>
+    <div class="chips">${(eq.length ? eq : ['bodyweight']).map(k => `<span class="chip chip-eq">${EQUIP[k] || k}</span>`).join('')}</div>
+
+    <span class="label sheet-h">Targets</span>
+    <div class="chips">${info.m.map(k => `<span class="chip">${MUSCLES[k] || k}</span>`).join('')}</div>
+    ${bodyMap(info.m)}
+    ${demoHtml(name)}
+
+    ${altRows ? `
+      <span class="label sheet-h">Same muscles, other options</span>
+      <ul class="alts">${altRows}</ul>` : ''}
+
+    <div class="sheet-links">
+      <a class="pill blue" target="_blank" rel="noopener"
+         href="https://www.youtube.com/results?search_query=${q}+form">▶ Watch tutorial</a>
+      <a class="pill gray" target="_blank" rel="noopener"
+         href="https://www.google.com/search?tbm=isch&q=${q}">🖼 See images</a>
+    </div>`;
+}
+
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && view.name === 'exercise') {
-    view = view.back || { name: 'week' };
+  if (e.key === 'Escape' && (view.name === 'exercise' || view.name === 'libex' || view.name === 'libmuscle')) {
+    view = view.back || { name: view.name === 'exercise' ? 'week' : 'library' };
     render();
   }
 });
@@ -764,6 +852,11 @@ function renderTopper() {
       <button class="topper-done ${done ? 'is-done' : ''}" data-tact="ex-toggle">
         ${done ? '✓ Done' : 'Mark done'}
       </button>`;
+  } else if (view.name === 'libmuscle' || view.name === 'libex') {
+    const title = view.name === 'libmuscle' ? (MUSCLES[view.muscle] || 'Library') : 'Library';
+    topper.innerHTML = `
+      <button class="topper-back" data-tact="lib-back" aria-label="Back">‹</button>
+      <span class="topper-title">${title}</span>`;
   } else {
     topper.innerHTML = `${brand}<span class="topper-spacer"></span>${avatar}`;
   }
@@ -772,16 +865,19 @@ function renderTopper() {
 function render() {
   const main = $('#view');
   document.getElementById('nav').style.display =
-    (view.name === 'login' || view.name === 'exercise') ? 'none' : 'flex';
+    (view.name === 'login' || view.name === 'exercise' || view.name === 'libex') ? 'none' : 'flex';
   renderTopper();
   if (view.name === 'login') main.innerHTML = loginView();
   else if (view.name === 'week') main.innerHTML = weekView();
   else if (view.name === 'day') main.innerHTML = dayView(view.dayId, view.from === 'week');
   else if (view.name === 'exercise') main.innerHTML = exerciseView();
+  else if (view.name === 'library') main.innerHTML = libraryView();
+  else if (view.name === 'libmuscle') main.innerHTML = libraryMuscleView();
+  else if (view.name === 'libex') main.innerHTML = libraryExerciseView();
   else main.innerHTML = historyView();
 
-  /* The exercise screen owns the demo loop. */
-  if (view.name === 'exercise') startDemoLoop();
+  /* The exercise screens own the demo loop. */
+  if (view.name === 'exercise' || view.name === 'libex') startDemoLoop();
   else stopDemoLoop();
 
   /* Heatmap opens showing the most recent weeks. */
@@ -798,6 +894,7 @@ function render() {
     const key = b.dataset.nav;
     const activeTab = (view.name === 'week' && key === 'week')
       || (view.name === 'history' && key === 'history')
+      || ((view.name === 'library' || view.name === 'libmuscle') && key === 'library')
       || (view.name === 'day' && view.from === 'nav' && key === 'today');
     b.classList.toggle('active', activeTab);
   });
@@ -819,6 +916,9 @@ $('#topper').addEventListener('click', e => {
       buzz(10);
       renderTopper();                // only the chrome changes — keep scroll + strip
       return;
+    case 'lib-back':
+      view = view.back || { name: 'library' };
+      break;
     case 'switch-profile':
       weekEdit = false;
       view = { name: 'login' };
@@ -841,6 +941,7 @@ document.getElementById('nav').addEventListener('click', e => {
   const key = btn.dataset.nav;
   if (key === 'week') view = { name: 'week' };
   else if (key === 'history') view = { name: 'history' };
+  else if (key === 'library') view = { name: 'library' };
   else view = { name: 'day', dayId: todayDayId(), from: 'nav' };
   window.scrollTo(0, 0);
   render();
@@ -872,6 +973,18 @@ $('#view').addEventListener('click', e => {
   }
   const detail = e.target.closest('[data-detail]');
   if (detail) return openExercise(detail.dataset.detail);
+  const libM = e.target.closest('[data-lib-muscle]');
+  if (libM) {
+    view = { name: 'libmuscle', muscle: libM.dataset.libMuscle, back: view };
+    window.scrollTo(0, 0);
+    return render();
+  }
+  const libEx = e.target.closest('[data-lib-ex]');
+  if (libEx) {
+    view = { name: 'libex', ex: libEx.dataset.libEx, back: view };
+    window.scrollTo(0, 0);
+    return render();
+  }
   /* Exercise-screen actions: swap in an alternate, revert, mark done. */
   if (view.name === 'exercise') {
     const useAlt = e.target.closest('[data-swap]');

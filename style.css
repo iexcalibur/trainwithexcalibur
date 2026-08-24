@@ -700,3 +700,32 @@ h1 { font-size: 30px; font-weight: 800; margin: 2px 0 16px; }
 .bottom-nav .nav-icon { font-size: 16px; }
 .bottom-nav button.active { color: var(--ink); background: var(--card2); }
 .bottom-nav button.active .nav-icon { color: var(--green); }
+
+/* ---------------- muscle library ---------------- */
+.lib-chips { margin-bottom: 4px; }
+.lib-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  cursor: pointer;
+}
+.lib-chip .lib-n { color: var(--faint); font-size: 10px; font-weight: 700; }
+.lib-count { color: var(--muted); font-size: 12.5px; margin: 2px 0 14px; }
+.lib-list { display: flex; flex-direction: column; gap: 8px; }
+.lib-row {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; text-align: left;
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 14px; padding: 12px 14px; color: var(--ink);
+}
+.lib-row-body { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.lib-row-name { font-weight: 700; font-size: 14px; }
+.lib-sec {
+  color: var(--faint); font-size: 9px; font-weight: 700;
+  margin-left: 7px; text-transform: uppercase; letter-spacing: 0.07em;
+}
+.lib-row-eq { color: var(--muted); font-size: 11.5px; }
+.chip-eq { color: var(--green); }
+.lib-alt-link {
+  flex: 1; display: flex; align-items: center; justify-content: space-between;
+  color: var(--ink); text-align: left; font-size: 13.5px; font-weight: 600;
+}
+.lib-alt-link .chev { color: var(--faint); }

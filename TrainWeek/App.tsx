@@ -9,9 +9,10 @@ import LoginScreen from './src/screens/LoginScreen';
 import WeekScreen from './src/screens/WeekScreen';
 import DayScreen from './src/screens/DayScreen';
 import HistoryScreen from './src/screens/HistoryScreen';
+import LibraryScreen from './src/screens/LibraryScreen';
 import { C } from './src/theme';
 
-type Tab = 'week' | 'today' | 'history';
+type Tab = 'week' | 'today' | 'library' | 'history';
 
 const CHROME_BG = 'rgba(21, 26, 33, 0.55)';
 
@@ -50,6 +51,8 @@ function Root() {
     content = <WeekScreen openDay={setOpenedDay} />;
   } else if (tab === 'today') {
     content = <DayScreen dayId={todayDayId()} />;
+  } else if (tab === 'library') {
+    content = <LibraryScreen />;
   } else {
     content = <HistoryScreen />;
   }
@@ -65,6 +68,7 @@ function Root() {
   const tabs: { key: Tab; label: string; icon: string }[] = [
     { key: 'week', label: 'Overview', icon: '◎' },
     { key: 'today', label: 'Today', icon: '▶' },
+    { key: 'library', label: 'Library', icon: '⌗' },
     { key: 'history', label: 'History', icon: '≡' },
   ];
 

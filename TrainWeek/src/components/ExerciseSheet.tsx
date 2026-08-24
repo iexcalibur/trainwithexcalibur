@@ -19,8 +19,9 @@ const imgSearch = (q: string) =>
 const ytSearch = (q: string) =>
   `https://www.youtube.com/results?search_query=${encodeURIComponent(q + ' exercise form')}`;
 
-/* Silent loop: two frames (start ⇄ end) swapped on a timer. */
-function FrameLoop({ frames, name }: { frames: [string, string]; name: string }) {
+/* Silent loop: two frames (start ⇄ end) swapped on a timer.
+   Exported so the library's exercise pages can reuse it. */
+export function FrameLoop({ frames, name }: { frames: [string, string]; name: string }) {
   const fade = useRef(new Animated.Value(0)).current;
   const [second, setSecond] = useState(false);
 
