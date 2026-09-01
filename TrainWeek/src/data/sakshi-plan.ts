@@ -78,9 +78,10 @@ export const SAKSHI_PLAN: Day[] = [
         title: 'Main lifts', meta: 'rest 90 sec between sets',
         items: [
           { name: 'Goblet or dumbbell squat', dose: '3 × 8–12' },
-          { name: '45° back extension, glute-biased', note: 'Hips pressed into the pad, squeeze the glutes at the top.', dose: '3 × 12' },
+          { name: 'Dumbbell Romanian deadlift', note: 'Hips back, dumbbells close to the legs, feel the hamstrings stretch.', dose: '3 × 10' },
           { name: 'Leg press', dose: '3 × 12' },
           { name: 'Walking lunge', dose: '2 × 10ea' },
+          { name: 'Lateral step squat', note: 'Step wide, sit into one side, push back to standing.', dose: '2 × 8ea' },
           { name: 'Calf raise', dose: '3 × 15' },
           { name: 'Cable crunch or hanging knee raise', dose: '3 × 12' },
         ],
@@ -95,7 +96,7 @@ export const SAKSHI_PLAN: Day[] = [
       },
       { title: 'Cool-down', meta: 'hold 20–30 sec, breathe slowly, no bouncing', items: LOWER_COOL },
     ],
-    cut: 'Cut in this order: walking lunge → calf raise. Squat, back extension and leg press stay.',
+    cut: 'Cut in this order: walking lunge → calf raise. Squat, RDL and leg press stay.',
   },
 
   {
@@ -130,15 +131,16 @@ export const SAKSHI_PLAN: Day[] = [
 
   {
     id: 'fri', num: '04', name: 'Friday', short: 'FRI', focus: 'Lower B',
-    subtitle: 'Glute bridge · single-leg · hamstrings · core',
+    subtitle: 'Hip thrust · single-leg · hamstrings · core',
     time: '45–60 min', targetMin: [45, 60],
     sections: [
       { title: 'Prep', meta: 'dynamic warm-up + activation, 8–10 min', items: LOWER_PREP },
       {
         title: 'Main lifts', meta: 'rest 90 sec between sets',
         items: [
-          { name: 'Floor glute bridge, dumbbell on hips', note: 'Heels close to the hips, ribs down, hard 2s squeeze at the top.', dose: '3 × 12' },
+          { name: 'Hip thrust, dumbbell or barbell', note: 'Heels down, ribs down, squeeze at the top.', dose: '3 × 10' },
           { name: 'Bulgarian split squat or leg press', dose: '3 × 10' },
+          { name: 'Pause squat, goblet or barbell', note: 'Two-second dead stop at the bottom; stay tall out of the hole.', dose: '2 × 8' },
           { name: 'Leg curl, seated or lying', dose: '3 × 12' },
           { name: 'Leg extension', dose: '3 × 12' },
           { name: 'Standing calf raise', dose: '3 × 15' },
@@ -155,6 +157,6 @@ export const SAKSHI_PLAN: Day[] = [
       },
       { title: 'Cool-down', meta: 'hold 20–30 sec, breathe slowly, no bouncing', items: LOWER_COOL },
     ],
-    cut: 'Cut in this order: leg extension → standing calf raise. Glute bridge stays.',
+    cut: 'Cut in this order: leg extension → standing calf raise. Hip thrust stays.',
   },
 ];

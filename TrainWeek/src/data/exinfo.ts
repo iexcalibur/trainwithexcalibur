@@ -136,6 +136,10 @@ export const EXINFO: Record<string, ExInfo> = {
   'Wrist flexor stretch': { m: ['wrists', 'forearms'], alt: ['Prayer stretch', 'Reverse prayer stretch', 'Fingers-down wall stretch'] },
   'Foam roll lats, quads, calves': { m: ['lats', 'quads', 'calves'], alt: ['Massage-gun pass, light', 'Stick roller', 'Lacrosse-ball targeted spots'] },
 
+  /* ---------------- Loaded pattern work ---------------- */
+  'Pause squat, goblet or barbell': { m: ['quads', 'glutes', 'core'], alt: ['Goblet or dumbbell squat', 'Box squat with a controlled sit', 'Leg press with 2s pause at depth'] },
+  'Lateral step squat': { m: ['quads', 'glutes', 'adductors', 'balance'], alt: ['Cossack squat, shallow', 'Lateral step-down', 'Dumbbell reverse lunge'] },
+
   /* ---------------- Equipment-light main-lift stand-ins ---------------- */
   'Floor glute bridge, dumbbell on hips': { m: ['glutes', 'hamstrings'], alt: ['Single-leg glute bridge', '45° back extension, glute-biased', 'Frog pump', 'Smith machine hip thrust'] },
   'Banded standing kickback': { m: ['glutes'], alt: ['Quadruped donkey kick', 'Single-leg glute bridge', '45° back extension, glute-biased'] },
@@ -214,6 +218,8 @@ export const EQUIP: Record<string, string> = {
 
 /* Exercise → equipment needed (minimal viable set; see EQUIP above). */
 const EXEQUIP: Record<string, string[]> = {
+  'Pause squat, goblet or barbell': ['dumbbell'],
+  'Lateral step squat': ['bodyweight'],
   'Easy cardio — bike or incline walk': ['cardio'],
   'Easy cardio': ['cardio'],
   'Cat-cow · hip circles · band pull-aparts': ['bodyweight', 'band'],
