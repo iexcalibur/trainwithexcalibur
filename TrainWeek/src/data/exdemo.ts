@@ -21,6 +21,7 @@ const DEMOS: Record<string, DemoEntry> = {
   "Overhead dumbbell extension": {"d":"Standing_Dumbbell_Triceps_Extension","t":"Standing Dumbbell Triceps Extension"},
   "Dumbbell walking lunge": {"d":"Dumbbell_Lunges","t":"Dumbbell Lunges"},
   "Pause squat, goblet or barbell": {"d":"Goblet_Squat","t":"Goblet Squat"},
+  "Arnold press": {"d":"Arnold_Dumbbell_Press","t":"Arnold Dumbbell Press"},
   "Lateral step squat": {"d":"Barbell_Side_Split_Squat","t":"Barbell Side Split Squat"},
   "Glute bridge with posterior tilt": {"d":"Butt_Lift_Bridge","t":"Butt Lift (Bridge)"},
   "Kneeling hip flexor stretch with posterior tilt": {"d":"Kneeling_Hip_Flexor","t":"Kneeling Hip Flexor"},

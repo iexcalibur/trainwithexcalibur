@@ -1,6 +1,7 @@
 import { Day } from './data/plan';
 import { PLAN } from './data/plan';
 import { SAKSHI_PLAN } from './data/sakshi-plan';
+import { SHUBHAM2_PLAN } from './data/shubham2-plan';
 
 export interface Rule {
   color: string;
@@ -34,6 +35,30 @@ export const PROFILES: Profile[] = [
         color: '#4AA8FF',
         label: 'Be honest about the clock',
         text: 'Full sessions land at 80–95 minutes. If that does not fit, cut the OPTIONAL lines first, then the fascia block — not the main lifts and not the joint work. A 60-minute session you actually do beats a 90-minute one you skip.',
+      },
+    ],
+  },
+  {
+    id: 'shubham2',
+    name: 'Shubham 2.0',
+    tagline: 'Upper-body frequency · chest, back, shoulders twice a week',
+    color: '#4AA8FF',
+    plan: SHUBHAM2_PLAN,
+    rules: [
+      {
+        color: '#FFB84A',
+        label: 'Hit it when it recovers',
+        text: 'Chest, back and shoulders each get a heavy day and a volume day, never less than 48 hours apart — that is the whole idea. If a group is still sore on its second visit, drop the volume, not the session.',
+      },
+      {
+        color: '#1EE6A8',
+        label: 'Abs every day',
+        text: 'Five days, five different jobs: anti-extension, anti-rotation, obliques, lower abs, flexion. Short, honest sets — the core is trained by the week, not by one long session.',
+      },
+      {
+        color: '#4AA8FF',
+        label: 'Back-conscious, still',
+        text: 'No legs here, but the spine rules stay: supported rows and presses, nothing that loads the low back in flexion. Nothing should send pain down a leg — if it does, stop that item.',
       },
     ],
   },

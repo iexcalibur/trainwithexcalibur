@@ -22,11 +22,13 @@ function loadPwa(file, names) {
 
 const pwaPlan = loadPwa('plan.js', ['PLAN']).PLAN;
 const pwaSak = loadPwa('sakshi-plan.js', ['SAKSHI_PLAN']).SAKSHI_PLAN;
+const pwaS2 = loadPwa('shubham2-plan.js', ['SHUBHAM2_PLAN']).SHUBHAM2_PLAN;
 const pwaInfo = loadPwa('exinfo.js', ['MUSCLES', 'EXINFO', 'EQUIP', 'equipFor']);
 const pwaDemo = loadPwa('exdemo.js', ['DEMOS', 'VIDEOS', 'demoFor']);
 
 const natPlan = require(path.resolve(NATIVE, 'plan.js')).PLAN;
 const natSak = require(path.resolve(NATIVE, 'sakshi-plan.js')).SAKSHI_PLAN;
+const natS2 = require(path.resolve(NATIVE, 'shubham2-plan.js')).SHUBHAM2_PLAN;
 const natInfo = require(path.resolve(NATIVE, 'exinfo.js'));
 const natDemo = require(path.resolve(NATIVE, 'exdemo.js'));
 
@@ -68,6 +70,7 @@ function compareMaps(label, pwa, nat) {
 
 comparePlans('PLAN', pwaPlan, natPlan);
 comparePlans('SAKSHI', pwaSak, natSak);
+comparePlans('SHUBHAM2', pwaS2, natS2);
 compareMaps('MUSCLES', pwaInfo.MUSCLES, natInfo.MUSCLES);
 compareMaps('EXINFO', pwaInfo.EXINFO, natInfo.EXINFO);
 compareMaps('EQUIP', pwaInfo.EQUIP, natInfo.EQUIP);
@@ -76,7 +79,7 @@ compareMaps('EQUIP', pwaInfo.EQUIP, natInfo.EQUIP);
    over every name either app can ever render (plan items, EXINFO keys,
    and every clickable alternate). */
 const allNames = new Set();
-for (const plan of [pwaPlan, pwaSak, natPlan, natSak])
+for (const plan of [pwaPlan, pwaSak, pwaS2, natPlan, natSak, natS2])
   for (const d of plan) for (const s of d.sections) for (const it of s.items) allNames.add(it.name);
 for (const info of [pwaInfo.EXINFO, natInfo.EXINFO])
   for (const [k, v] of Object.entries(info)) { allNames.add(k); (v.alt ?? []).forEach(a => allNames.add(a)); }
@@ -91,13 +94,14 @@ if (untagged.length) diffs.push(`untagged exercises: ${untagged.join(' | ')}`);
 /* Every plan item must resolve in EXINFO (directly or via section-tag fallback is
    NOT enough for main content — flag items with no entry at all). */
 const noInfo = [];
-for (const [label, plan] of [['PLAN', pwaPlan], ['SAKSHI', pwaSak]])
+for (const [label, plan] of [['PLAN', pwaPlan], ['SAKSHI', pwaSak], ['SHUBHAM2', pwaS2]])
   for (const d of plan) for (const s of d.sections) for (const it of s.items)
     if (!pwaInfo.EXINFO[it.name]) noInfo.push(`${label} ${d.id}/${s.title}: ${it.name}`);
 
 const totals = {
   shubhamWeek: [pwaPlan, natPlan].map(p => p.reduce((n, d) => n + d.sections.reduce((m, s) => m + s.items.length, 0), 0)),
   sakshiWeek: [pwaSak, natSak].map(p => p.reduce((n, d) => n + d.sections.reduce((m, s) => m + s.items.length, 0), 0)),
+  shubham2Week: [pwaS2, natS2].map(p => p.reduce((n, d) => n + d.sections.reduce((m, s) => m + s.items.length, 0), 0)),
   exinfoKeys: [Object.keys(pwaInfo.EXINFO).length, Object.keys(natInfo.EXINFO).length],
   demoNamesChecked: allNames.size,
 };

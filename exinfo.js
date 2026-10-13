@@ -151,6 +151,9 @@ const EXINFO = {
   'Wrist flexor stretch': { m: ['wrists', 'forearms'], alt: ['Prayer stretch', 'Reverse prayer stretch', 'Fingers-down wall stretch'] },
   'Foam roll lats, quads, calves': { m: ['lats', 'quads', 'calves'], alt: ['Massage-gun pass, light', 'Stick roller', 'Lacrosse-ball targeted spots'] },
 
+  /* ---------------- Shubham 2.0 additions ---------------- */
+  'Arnold press': { m: ['side-delts', 'front-delts', 'triceps'], alt: ['Seated dumbbell or machine press', 'Landmine press', 'Standing dumbbell press, light'] },
+
   /* ---------------- Loaded pattern work ---------------- */
   'Pause squat, goblet or barbell': { m: ['quads', 'glutes', 'core'], alt: ['Goblet or dumbbell squat', 'Box squat with a controlled sit', 'Leg press with 2s pause at depth'] },
   'Lateral step squat': { m: ['quads', 'glutes', 'adductors', 'balance'], alt: ['Cossack squat, shallow', 'Lateral step-down', 'Dumbbell reverse lunge'] },
@@ -218,6 +221,7 @@ Object.assign(EXINFO, {
 
 /* Exercise → equipment needed (minimal viable set; see EQUIP above). */
 const EXEQUIP = {
+  'Arnold press': ['dumbbell', 'bench'],
   'Pause squat, goblet or barbell': ['dumbbell'],
   'Lateral step squat': ['bodyweight'],
   'Easy cardio — bike or incline walk': ['cardio'],
