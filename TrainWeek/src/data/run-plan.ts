@@ -58,13 +58,13 @@ export const RUN_OUTDOOR = runWeek({
 });
 
 export const RUN_TREADMILL = runWeek({
-  mon: [{ name: 'Treadmill short run', note: '1% incline to match the road. Talk-test pace the whole way.', dose: '20–30 min' }],
-  tue: [{ name: 'Treadmill sprints', note: 'Belt to a hard speed, straddle the rails, drop on and go. Step off and stand until fully recovered.', dose: '8 × 20s · 2–3 min walk' }],
-  wed: [{ name: 'Treadmill endurance run', note: '1% incline, one speed for the whole run — the pace you could hold for an hour. Every other week make it a fartlek: 30s fast / 90s easy inside the same run.', dose: '40–50 min' }],
-  thu: [{ name: 'Treadmill short run', note: '0–1% incline, slower than feels necessary. This is recovery, not training.', dose: '20–25 min' }],
-  fri: [{ name: 'Treadmill multiple sprints', note: '3 sets of 6 × 30s hard with 45s walk between reps, 3 min between sets. Same speed every rep.', dose: '3 × (6 × 30s)' }],
-  sat: [{ name: 'Treadmill short run', dose: '25–30 min' }],
-  sun: [{ name: 'Treadmill long run', note: '1% incline, easy pace throughout. Add 5 minutes a week; every 4th week drop back.', dose: '60–75 min' }],
+  mon: [{ name: 'Treadmill short run', note: 'Speed 8–9 km/h · incline 1%. Talk-test pace the whole way — if you cannot speak in sentences, drop 0.5 km/h. All treadmill numbers are starting points; adjust by 0.5 km/h a week as they get easy.', dose: '20–30 min' }],
+  tue: [{ name: 'Treadmill sprints', note: 'Speed 15–16 km/h · incline 1%. Belt up to speed, straddle the rails, drop on for 20s, step off. Walk at 4–5 km/h and stand until fully recovered.', dose: '8 × 20s · 2–3 min walk' }],
+  wed: [{ name: 'Treadmill endurance run', note: 'Speed 10–11 km/h · incline 1%, one speed for the whole run — the pace you could hold for an hour. Every other week make it a fartlek: 30s at 13 km/h / 90s at 9 km/h inside the same run.', dose: '40–50 min' }],
+  thu: [{ name: 'Treadmill short run', note: 'Speed 7.5–8.5 km/h · incline 0–1%, slower than feels necessary. This is recovery, not training.', dose: '20–25 min' }],
+  fri: [{ name: 'Treadmill multiple sprints', note: 'Speed 13–14 km/h · incline 2%. 3 sets of 6 × 30s with 45s walk (4 km/h) between reps, 3 min between sets. Same speed every rep — if the last one of a set is not holdable, the speed is too high.', dose: '3 × (6 × 30s)' }],
+  sat: [{ name: 'Treadmill short run', note: 'Speed 8.5–9.5 km/h · incline 1%. Easy.', dose: '25–30 min' }],
+  sun: [{ name: 'Treadmill long run', note: 'Speed 8.5–9.5 km/h · incline 1%, easy throughout. Add 5 minutes a week; every 4th week drop back.', dose: '60–75 min' }],
 });
 
 /* Speed mode: seven days of short runs plus sprint work, no long run.
