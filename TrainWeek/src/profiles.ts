@@ -52,14 +52,14 @@ export const PROFILES: Profile[] = [
   {
     id: 'shubham2',
     name: 'Shubham 2.0',
-    tagline: 'Upper-body frequency · daily abs · conditioning finisher',
+    tagline: 'Push / pull every 48 hours · daily abs · conditioning finisher',
     color: '#4AA8FF',
     plan: SHUBHAM2_PLAN,
     rules: [
       {
         color: '#FFB84A',
         label: 'Hit it when it recovers',
-        text: 'Chest, back and shoulders each get a heavy day and a volume day, never less than 48 hours apart — that is the whole idea. If a group is still sore on its second visit, drop the volume, not the session.',
+        text: 'Push, pull, push, pull, push: chest and shoulders Monday, Wednesday, Friday; back Tuesday and Thursday. Every group comes back exactly 48 hours later. Monday and Tuesday are heavy, the rest is volume, and Friday stays a touch lighter so Monday is fresh. If a group is still sore when its day comes round, drop the volume, not the session.',
       },
       {
         color: '#1EE6A8',
