@@ -13,7 +13,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.runningarrow.app",
-      "buildNumber": "2",
+      "buildNumber": "3",
       "requireFullScreen": true,
       "infoPlist": {
         "UIViewControllerBasedStatusBarAppearance": false,
