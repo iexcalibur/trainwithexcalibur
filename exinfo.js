@@ -152,6 +152,15 @@ const EXINFO = {
   'Foam roll lats, quads, calves': { m: ['lats', 'quads', 'calves'], alt: ['Massage-gun pass, light', 'Stick roller', 'Lacrosse-ball targeted spots'] },
 
   /* ---------------- Shubham 3.0 · running ---------------- */
+  'Build-up runs': { m: ['cardio', 'calves', 'hamstrings', 'quads', 'glutes', 'elastic'], alt: ['Strides', 'A-skips · high knees · butt kicks', 'Treadmill strides'] },
+  'Short run': { m: ['cardio', 'calves', 'hamstrings', 'quads', 'glutes'], alt: ['Treadmill short run', 'Easy run', 'Recovery jog'] },
+  'Sprints': { m: ['cardio', 'calves', 'hamstrings', 'quads', 'glutes', 'elastic'], alt: ['Treadmill sprints', 'Hill repeats', 'Track or road intervals'] },
+  'Endurance run': { m: ['cardio', 'calves', 'hamstrings', 'quads', 'glutes'], alt: ['Treadmill endurance run', 'Tempo run', 'Long run'] },
+  'Multiple sprints': { m: ['cardio', 'calves', 'hamstrings', 'quads', 'glutes', 'elastic'], alt: ['Treadmill multiple sprints', 'Sprints', 'Track or road intervals'] },
+  'Treadmill short run': { m: ['cardio', 'calves', 'hamstrings', 'quads', 'glutes'], alt: ['Short run', 'Treadmill easy run', 'Treadmill recovery jog'] },
+  'Treadmill sprints': { m: ['cardio', 'calves', 'hamstrings', 'quads', 'glutes', 'elastic'], alt: ['Sprints', 'Treadmill hill repeats', 'Treadmill intervals'] },
+  'Treadmill endurance run': { m: ['cardio', 'calves', 'hamstrings', 'quads', 'glutes'], alt: ['Endurance run', 'Treadmill tempo run', 'Treadmill long run'] },
+  'Treadmill multiple sprints': { m: ['cardio', 'calves', 'hamstrings', 'quads', 'glutes', 'elastic'], alt: ['Multiple sprints', 'Treadmill sprints', 'Treadmill intervals'] },
   'Brisk walk into a jog': { m: ['cardio', 'mobility'], alt: ['Easy walk to bring heart rate down', 'Easy cardio', 'Marching on the spot, building pace'] },
   'Leg swings · ankle circles · hip circles': { m: ['mobility', 'hips', 'ankle'], alt: ['Cat-cow · arm circles · leg swings', '90/90 hip rotation switches', 'Knee-to-wall ankle rock'] },
   'A-skips · high knees · butt kicks': { m: ['elastic', 'hip-flexors', 'calves'], alt: ['Strides', 'Ankle pogo hops, minimal knee bend', 'Rope skipping'] },
@@ -241,6 +250,15 @@ Object.assign(EXINFO, {
 /* Exercise → equipment needed (minimal viable set; see EQUIP above). */
 const EXEQUIP = {
   'Arnold press': ['dumbbell', 'bench'],
+  'Build-up runs': ['bodyweight'],
+  'Short run': ['bodyweight'],
+  'Sprints': ['bodyweight'],
+  'Endurance run': ['bodyweight'],
+  'Multiple sprints': ['bodyweight'],
+  'Treadmill short run': ['cardio'],
+  'Treadmill sprints': ['cardio'],
+  'Treadmill endurance run': ['cardio'],
+  'Treadmill multiple sprints': ['cardio'],
   'Brisk walk into a jog': ['bodyweight'],
   'Leg swings · ankle circles · hip circles': ['bodyweight'],
   'A-skips · high knees · butt kicks': ['bodyweight'],

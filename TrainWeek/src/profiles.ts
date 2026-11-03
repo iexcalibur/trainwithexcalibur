@@ -88,7 +88,7 @@ export const PROFILES: Profile[] = [
       {
         color: '#1EE6A8',
         label: 'Easy days easy, hard days hard',
-        text: 'Four of the seven runs are easy on purpose — that is what lets Tuesday, Thursday and Saturday be genuinely hard. If you cannot talk in sentences on an easy day, slow down. Speed comes from the recovery, not from pushing every run.',
+        text: 'Three short runs and the long run are easy on purpose — that is what lets the two sprint days be all-out and the endurance run stay steady. If you cannot talk in sentences on an easy day, slow down. Speed comes from the recovery, not from pushing every run.',
       },
       {
         color: '#FFB84A',
@@ -98,7 +98,7 @@ export const PROFILES: Profile[] = [
       {
         color: '#4AA8FF',
         label: 'Listen to the legs',
-        text: 'Shin, knee or Achilles pain that gets worse as you run is a stop sign, not something to run through — swap that day for the walk and the strength block. The small strength work after each run is what keeps you out of that situation.',
+        text: 'Shin, knee or Achilles pain that gets worse as you run is a stop sign, not something to run through — make that day a walk. Sprint days are the ones that bite: never sprint cold, and stop the session the moment form falls apart.',
       },
     ],
   },
