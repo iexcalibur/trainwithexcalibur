@@ -22,6 +22,9 @@ interface StoreValue {
   weekKey: string;
   profile: Profile | null;
   plan: Day[];
+  /** Chosen variant for mode profiles (null until the user picks one). */
+  mode: string | null;
+  setMode: (m: string) => void;
   selectProfile: (id: string) => void;
   signOut: () => void;
   progress: Record<string, boolean>;
@@ -70,6 +73,7 @@ const kActive = (p: string) => `ra:${p}:active`;
 const kProgress = (p: string, wk: string) => `ra:${p}:progress:${wk}`;
 const kSwaps = (p: string) => `ra:${p}:swaps`;
 const kOrder = (p: string) => `ra:${p}:order`;
+const kMode = (p: string) => `ra:${p}:mode`;
 
 /* Weekday slots stay fixed; workouts permute between them. Progress,
    swaps and history are keyed by WORKOUT id so they travel with it. */
@@ -121,26 +125,33 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [swaps, setSwaps] = useState<Record<string, string>>({});
   const [order, setOrderState] = useState<string[] | null>(null);
   const [active, setActive] = useState<ActiveSession | null>(null);
+  const [mode, setModeState] = useState<string | null>(null);
 
-  const plan = profile ? applyOrder(profile.plan, order) : [];
+  /* Mode profiles swap the base week; everything keyed by day id carries over. */
+  const base = profile
+    ? (profile.modes && profile.plans ? profile.plans[mode ?? profile.modes[0].key] : profile.plan)
+    : [];
+  const plan = profile ? applyOrder(base, order) : [];
 
   /* Load a profile's data set. */
   const loadFor = useCallback(async (p: Profile) => {
     try {
-      const [pr, se, ac, sw, od] = await AsyncStorage.multiGet([
+      const [pr, se, ac, sw, od, md] = await AsyncStorage.multiGet([
         kProgress(p.id, weekKey),
         kSessions(p.id),
         kActive(p.id),
         kSwaps(p.id),
         kOrder(p.id),
+        kMode(p.id),
       ]);
       setProgress(pr[1] ? JSON.parse(pr[1]) : {});
       setSessions(se[1] ? JSON.parse(se[1]) : []);
       setActive(ac[1] ? JSON.parse(ac[1]) : null);
       setSwaps(sw[1] ? JSON.parse(sw[1]) : {});
       setOrderState(od[1] ? JSON.parse(od[1]) : null);
+      setModeState(md[1] ?? null);
     } catch {
-      setProgress({}); setSessions([]); setActive(null); setSwaps({}); setOrderState(null);
+      setProgress({}); setSessions([]); setActive(null); setSwaps({}); setOrderState(null); setModeState(null);
     }
   }, [weekKey]);
 
@@ -166,7 +177,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = useCallback(() => {
     setProfile(null);
-    setProgress({}); setSessions([]); setActive(null); setSwaps({}); setOrderState(null);
+    setProgress({}); setSessions([]); setActive(null); setSwaps({}); setOrderState(null); setModeState(null);
     AsyncStorage.removeItem(K_PROFILE).catch(() => {});
   }, []);
 
@@ -249,9 +260,14 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const discardSession = useCallback(() => saveActive(null), [saveActive]);
 
+  const setMode = useCallback((m: string) => {
+    setModeState(m);
+    if (profile) AsyncStorage.setItem(kMode(profile.id), m).catch(() => {});
+  }, [profile]);
+
   return (
     <Store.Provider value={{
-      ready, weekKey, profile, plan, selectProfile, signOut,
+      ready, weekKey, profile, plan, mode, setMode, selectProfile, signOut,
       progress, toggle, resetDay, dayDone, swaps, setSwap, order: plan.map(d => d.id), setOrder,
       sessions, active, startSession, pauseSession, resumeSession, endSession, discardSession,
     }}>

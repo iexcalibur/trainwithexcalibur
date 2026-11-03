@@ -19,7 +19,12 @@ const K = {
   active: p => `twpwa:${p}:active`,
   swaps: p => `twpwa:${p}:swaps`,
   order: p => `twpwa:${p}:order`,
+  mode: p => `twpwa:${p}:mode`,
 };
+
+/* Profiles with `modes` keep two variants of the same week (e.g. treadmill
+   vs outdoor); the chosen one is stored per profile. */
+let mode = null;
 
 const PROFILES = {
   shubham: {
@@ -39,8 +44,23 @@ const PROFILES = {
     plan: () => SHUBHAM2_PLAN,
     rules: [
       { color: 'var(--amber)', label: 'Hit it when it recovers', text: 'Chest, back and shoulders each get a heavy day and a volume day, never less than 48 hours apart — that is the whole idea. If a group is still sore on its second visit, drop the volume, not the session.' },
-      { color: 'var(--green)', label: 'Abs every day', text: 'Five days, five different jobs: anti-extension, anti-rotation, obliques, lower abs, flexion. Short, honest sets — the core is trained by the week, not by one long session.' },
+      { color: 'var(--green)', label: 'Abs every day', text: 'The ab machine opens every abs block, then the day\'s job: anti-extension, anti-rotation, obliques, lower abs, flexion. Short, honest sets — the core is trained by the week, not by one long session.' },
       { color: 'var(--blue)', label: 'Back-conscious, still', text: 'No legs here, but the spine rules stay: supported rows and presses, nothing that loads the low back in flexion. Nothing should send pain down a leg — if it does, stop that item.' },
+    ],
+  },
+  shubham3: {
+    name: 'Shubham 3.0',
+    tagline: 'Running · stamina, endurance, speed · 7 days',
+    color: 'var(--amber)',
+    modes: [
+      { key: 'treadmill', label: 'Treadmill', sub: 'Indoor · incline and speed cues' },
+      { key: 'outdoor', label: 'Outdoor', sub: 'Road, track and hills' },
+    ],
+    plan: () => (mode === 'outdoor' ? RUN_OUTDOOR : RUN_TREADMILL),
+    rules: [
+      { color: 'var(--green)', label: 'Easy days easy, hard days hard', text: 'Four of the seven runs are easy on purpose — that is what lets Tuesday, Thursday and Saturday be genuinely hard. If you cannot talk in sentences on an easy day, slow down. Speed comes from the recovery, not from pushing every run.' },
+      { color: 'var(--amber)', label: 'Build slowly', text: 'Add about 10% a week in total minutes, and 5 minutes to the long run. Every fourth week, pull everything back by a quarter. Stamina and endurance are built over months; the plan only works if you are still running in month three.' },
+      { color: 'var(--blue)', label: 'Listen to the legs', text: 'Shin, knee or Achilles pain that gets worse as you run is a stop sign, not something to run through — swap that day for the walk and the strength block. The small strength work after each run is what keeps you out of that situation.' },
     ],
   },
   sakshi: {
@@ -119,6 +139,7 @@ function applyOrder(base, ord) {
 }
 
 function loadProfileState() {
+  mode = load(K.mode(profile), null);
   const base = PROFILES[profile].plan();
   order = load(K.order(profile), null) || base.map(d => d.id);
   plan = applyOrder(base, order);
@@ -226,9 +247,28 @@ function weekView() {
   ).size;
   const today = todayDayId();
 
+  /* Mode profiles: pick a variant first, then show a toggle above the week. */
+  if (p.modes && !mode) {
+    return `
+      <span class="label">${p.tagline}</span>
+      <h1>Where are you running?</h1>
+      <p class="mode-lead">Same week, two versions — pick the one that matches today's setup. You can switch any time from the overview.</p>
+      ${p.modes.map(m => `
+        <button class="card mode-card" data-mode="${m.key}">
+          <span class="mode-name">${m.label}</span>
+          <span class="mode-sub">${m.sub}</span>
+          <span class="chev">›</span>
+        </button>`).join('')}`;
+  }
+  const modeToggle = p.modes ? `
+    <div class="mode-toggle" role="tablist">
+      ${p.modes.map(m => `<button role="tab" class="${m.key === mode ? 'active' : ''}" data-mode="${m.key}">${m.label}</button>`).join('')}
+    </div>` : '';
+
   return `
     <span class="label">${p.tagline}</span>
     <h1>Overview</h1>
+    ${modeToggle}
     <div class="card hero">
       <div class="hero-stat"><b>${sessionsThisWeek}<span class="dim">/${plan.length}</span></b><span class="label">Sessions</span></div>
       ${ring(148, 13, pct, 'var(--green)',
@@ -966,6 +1006,14 @@ $('#view').addEventListener('click', e => {
     loadProfileState();
     view = { name: 'week' };
     window.scrollTo(0, 0);
+    return render();
+  }
+  const modeBtn = e.target.closest('[data-mode]');
+  if (modeBtn) {
+    mode = modeBtn.dataset.mode;
+    localStorage.setItem(K.mode(profile), JSON.stringify(mode));
+    loadProfileState();
+    buzz(10);
     return render();
   }
   const open = e.target.closest('[data-open-day]');

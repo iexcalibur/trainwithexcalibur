@@ -2,6 +2,7 @@ import { Day } from './data/plan';
 import { PLAN } from './data/plan';
 import { SAKSHI_PLAN } from './data/sakshi-plan';
 import { SHUBHAM2_PLAN } from './data/shubham2-plan';
+import { RUN_TREADMILL, RUN_OUTDOOR } from './data/run-plan';
 
 export interface Rule {
   color: string;
@@ -9,12 +10,22 @@ export interface Rule {
   text: string;
 }
 
+export interface ProfileMode {
+  key: string;
+  label: string;
+  sub: string;
+}
+
 export interface Profile {
   id: string;
   name: string;
   tagline: string;
   color: string;
+  /** Default week; mode profiles use `plans[mode]` instead. */
   plan: Day[];
+  /** Two variants of the same week (e.g. treadmill vs outdoor), chosen per profile. */
+  modes?: ProfileMode[];
+  plans?: Record<string, Day[]>;
   rules: Rule[];
 }
 
@@ -53,12 +64,41 @@ export const PROFILES: Profile[] = [
       {
         color: '#1EE6A8',
         label: 'Abs every day',
-        text: 'Five days, five different jobs: anti-extension, anti-rotation, obliques, lower abs, flexion. Short, honest sets — the core is trained by the week, not by one long session.',
+        text: 'The ab machine opens every abs block, then the day\'s job: anti-extension, anti-rotation, obliques, lower abs, flexion. Short, honest sets — the core is trained by the week, not by one long session.',
       },
       {
         color: '#4AA8FF',
         label: 'Back-conscious, still',
         text: 'No legs here, but the spine rules stay: supported rows and presses, nothing that loads the low back in flexion. Nothing should send pain down a leg — if it does, stop that item.',
+      },
+    ],
+  },
+  {
+    id: 'shubham3',
+    name: 'Shubham 3.0',
+    tagline: 'Running · stamina, endurance, speed · 7 days',
+    color: '#FFB84A',
+    plan: RUN_TREADMILL,
+    modes: [
+      { key: 'treadmill', label: 'Treadmill', sub: 'Indoor · incline and speed cues' },
+      { key: 'outdoor', label: 'Outdoor', sub: 'Road, track and hills' },
+    ],
+    plans: { treadmill: RUN_TREADMILL, outdoor: RUN_OUTDOOR },
+    rules: [
+      {
+        color: '#1EE6A8',
+        label: 'Easy days easy, hard days hard',
+        text: 'Four of the seven runs are easy on purpose — that is what lets Tuesday, Thursday and Saturday be genuinely hard. If you cannot talk in sentences on an easy day, slow down. Speed comes from the recovery, not from pushing every run.',
+      },
+      {
+        color: '#FFB84A',
+        label: 'Build slowly',
+        text: 'Add about 10% a week in total minutes, and 5 minutes to the long run. Every fourth week, pull everything back by a quarter. Stamina and endurance are built over months; the plan only works if you are still running in month three.',
+      },
+      {
+        color: '#4AA8FF',
+        label: 'Listen to the legs',
+        text: 'Shin, knee or Achilles pain that gets worse as you run is a stop sign, not something to run through — swap that day for the walk and the strength block. The small strength work after each run is what keeps you out of that situation.',
       },
     ],
   },

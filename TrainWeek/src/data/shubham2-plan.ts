@@ -46,6 +46,7 @@ export const SHUBHAM2_PLAN: Day[] = [
       {
         title: 'Abs', meta: 'anti-extension (front core)',
         items: [
+          { name: 'Ab crunch machine', note: 'Ribs toward hips; the machine moves, the hips do not.', dose: '3 × 12–15' },
           { name: 'Dumbbell dead bug', note: "Light DB at arm's length, ribs pinned down.", dose: '3 × 10ea' },
           { name: 'Plank with dumbbell drag-through', dose: '3 × 8ea' },
           { name: 'Overhead dumbbell march', dose: '3 × 30s' },
@@ -84,6 +85,7 @@ export const SHUBHAM2_PLAN: Day[] = [
       {
         title: 'Abs', meta: 'anti-rotation',
         items: [
+          { name: 'Ab crunch machine', note: 'Ribs toward hips; the machine moves, the hips do not.', dose: '3 × 12–15' },
           { name: 'Cable Pallof press', note: 'Resist the twist; ribs and hips stay square.', dose: '3 × 12ea' },
           { name: 'Half-kneeling cable chop', note: 'Light and controlled, no yanking.', dose: '3 × 12ea' },
           { name: 'Suitcase carry', note: 'One heavy DB; stay perfectly upright.', dose: '3 × 30–40m' },
@@ -130,6 +132,7 @@ export const SHUBHAM2_PLAN: Day[] = [
       {
         title: 'Abs', meta: 'obliques and lateral core',
         items: [
+          { name: 'Ab crunch machine', note: 'Ribs toward hips; the machine moves, the hips do not.', dose: '3 × 12–15' },
           { name: 'Side plank with a dumbbell on the top hip', dose: '3 × 20–40s ea' },
           { name: 'Cable lateral hold', note: 'Stand side-on and simply resist the pull.', dose: '3 × 20–30s ea' },
           { name: "Farmer's carry, two dumbbells", dose: '3 × 40m' },
@@ -176,6 +179,7 @@ export const SHUBHAM2_PLAN: Day[] = [
       {
         title: 'Abs', meta: 'lower abs',
         items: [
+          { name: 'Ab crunch machine', note: 'Ribs toward hips; the machine moves, the hips do not.', dose: '3 × 12–15' },
           { name: "Captain's-chair knee raise", note: 'Curl hips toward ribs; no leg swinging.', dose: '3 × 10–15' },
           { name: 'Reverse crunch on a bench', dose: '3 × 12–15' },
           { name: 'Lying leg raise, dumbbell between the feet', dose: '3 × 10–12' },
@@ -223,8 +227,8 @@ export const SHUBHAM2_PLAN: Day[] = [
       {
         title: 'Abs', meta: 'flexion; the one loaded-flexion day of the week',
         items: [
+          { name: 'Ab crunch machine', note: 'Ribs toward hips; the machine moves, the hips do not.', dose: '3 × 12–15' },
           { name: 'Cable crunch', note: 'Ribs toward hips; arms hold the rope, abs move the weight.', dose: '3 × 12–15' },
-          { name: 'Ab crunch machine', tags: ['optional'], dose: '3 × 12–15' },
           { name: 'Hollow hold or plank to finish', dose: '3 × 30–45s' },
         ],
       },

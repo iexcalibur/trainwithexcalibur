@@ -9,7 +9,7 @@ import { Card, Label } from '../components/ui';
 import { C } from '../theme';
 
 export default function WeekScreen({ openDay }: { openDay: (id: string) => void }) {
-  const { progress, dayDone, sessions, weekKey, plan, profile, order, setOrder } = useStore();
+  const { progress, dayDone, sessions, weekKey, plan, profile, order, setOrder, mode, setMode } = useStore();
   const [editing, setEditing] = React.useState(false);
 
   const totals = plan.map(d => ({ day: d, total: dayTotal(d), done: dayDone(d.id) }));
@@ -22,10 +22,43 @@ export default function WeekScreen({ openDay }: { openDay: (id: string) => void 
 
   const todayId = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][new Date().getDay()];
 
+  /* Mode profiles: pick a variant first, then show a toggle above the week. */
+  if (profile?.modes && !mode) {
+    return (
+      <ScrollView style={styles.root} contentContainerStyle={styles.content}>
+        <Label>{profile.tagline}</Label>
+        <Text style={styles.h1}>Where are you running?</Text>
+        <Text style={styles.modeLead}>
+          Same week, two versions — pick the one that matches today's setup. You can switch any time from the overview.
+        </Text>
+        {profile.modes.map(m => (
+          <Pressable key={m.key} onPress={() => setMode(m.key)}>
+            <Card style={styles.modeCard}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.modeName}>{m.label}</Text>
+                <Text style={styles.modeSub}>{m.sub}</Text>
+              </View>
+              <Text style={styles.modeChev}>›</Text>
+            </Card>
+          </Pressable>
+        ))}
+      </ScrollView>
+    );
+  }
+
   return (
     <ScrollView style={styles.root} contentContainerStyle={styles.content}>
       <Label>{profile?.tagline ?? 'Training week'}</Label>
       <Text style={styles.h1}>Overview</Text>
+      {profile?.modes && (
+        <View style={styles.modeToggle}>
+          {profile.modes.map(m => (
+            <Pressable key={m.key} style={[styles.modeBtn, m.key === mode && styles.modeBtnActive]} onPress={() => setMode(m.key)}>
+              <Text style={[styles.modeBtnText, m.key === mode && { color: C.ink }]}>{m.label}</Text>
+            </Pressable>
+          ))}
+        </View>
+      )}
 
       <Card style={styles.heroCard}>
         <View style={styles.heroRow}>
@@ -160,5 +193,17 @@ const styles = StyleSheet.create({
   dayBar: { height: 4, borderRadius: 2, backgroundColor: C.track, marginTop: 11 },
   dayBarFill: { height: 4, borderRadius: 2, backgroundColor: C.green },
   ruleCard: { marginTop: 12, gap: 6 },
+  modeLead: { color: C.muted, fontSize: 13.5, lineHeight: 20, marginTop: -6, marginBottom: 16 },
+  modeCard: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 18, marginBottom: 10 },
+  modeName: { color: C.ink, fontSize: 17, fontWeight: '800' },
+  modeSub: { color: C.muted, fontSize: 12.5, marginTop: 2 },
+  modeChev: { color: C.faint, fontSize: 22, fontWeight: '700' },
+  modeToggle: {
+    flexDirection: 'row', gap: 4, padding: 4, marginTop: -4, marginBottom: 16,
+    backgroundColor: C.card, borderRadius: 999, borderWidth: StyleSheet.hairlineWidth, borderColor: C.line,
+  },
+  modeBtn: { flex: 1, paddingVertical: 8, borderRadius: 999, alignItems: 'center' },
+  modeBtnActive: { backgroundColor: C.card2 },
+  modeBtnText: { color: C.muted, fontSize: 12.5, fontWeight: '700', letterSpacing: 0.5 },
   ruleText: { color: C.muted, fontSize: 13, lineHeight: 19 },
 });

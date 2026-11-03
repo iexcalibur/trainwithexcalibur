@@ -1,5 +1,5 @@
 /* Training Week PWA — offline-first service worker */
-const CACHE = 'twpwa-v29';
+const CACHE = 'twpwa-v30';
 const MEDIA = 'twpwa-media-v1';
 const DEMO_HOST = 'cdn.jsdelivr.net';
 const ASSETS = [
@@ -10,6 +10,7 @@ const ASSETS = [
   'plan.js',
   'sakshi-plan.js',
   'shubham2-plan.js',
+  'run-plan.js',
   'bodymodel.js',
   'exdemo.js',
   'exinfo.js',
