@@ -56,8 +56,9 @@ const PROFILES = {
     modes: [
       { key: 'treadmill', label: 'Treadmill', sub: 'Indoor · incline and speed cues' },
       { key: 'outdoor', label: 'Outdoor', sub: 'Road, track and hills' },
+      { key: 'speed', label: 'Speed', sub: 'Short runs + sprints, every day' },
     ],
-    plan: () => (mode === 'outdoor' ? RUN_OUTDOOR : RUN_TREADMILL),
+    plan: () => (mode === 'speed' ? RUN_SPEED : mode === 'outdoor' ? RUN_OUTDOOR : RUN_TREADMILL),
     rules: [
       { color: 'var(--green)', label: 'Easy days easy, hard days hard', text: 'Three short runs and the long run are easy on purpose — that is what lets the two sprint days be all-out and the endurance run stay steady. If you cannot talk in sentences on an easy day, slow down. Speed comes from the recovery, not from pushing every run.' },
       { color: 'var(--amber)', label: 'Build slowly', text: 'Add about 10% a week in total minutes, and 5 minutes to the long run. Every fourth week, pull everything back by a quarter. Stamina and endurance are built over months; the plan only works if you are still running in month three.' },

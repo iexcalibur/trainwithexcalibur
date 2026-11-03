@@ -66,3 +66,42 @@ export const RUN_TREADMILL = runWeek({
   sat: [{ name: 'Treadmill short run', dose: '25–30 min' }],
   sun: [{ name: 'Treadmill long run', note: '1% incline, easy pace throughout. Add 5 minutes a week; every 4th week drop back.', dose: '60–75 min' }],
 });
+
+/* Speed mode: seven days of short runs plus sprint work, no long run.
+   Hard sprint days alternate with strides so the fast days stay fast. */
+function speedWeek(): Day[] {
+  const spec: [string, string, string, string, string, string, string, [number, number], Exercise[], string, Exercise[]][] = [
+    ['mon', 'MON', '01', 'Monday',    'Accelerations', 'Short run · 6 × 60m from a standing start',      '30–40 min', [30, 40], RUN_WARM_SPRINT, 'Cut reps, never the build-ups.',
+      [{ name: 'Short run', note: 'Easy, talking pace. This is the warm engine for the sprints.', dose: '15 min' },
+       { name: 'Sprints', note: 'Standing start, drive hard for 60m, walk all the way back. Full recovery.', dose: '6 × 60m · 2 min walk' }]],
+    ['tue', 'TUE', '02', 'Tuesday',   'Strides',       'Short run · relaxed fast strides',               '30–35 min', [30, 35], RUN_WARM,        'Shorten the run; keep the strides.',
+      [{ name: 'Short run', note: 'Easy. Legs recover from Monday while staying quick.', dose: '20 min' },
+       { name: 'Strides', note: 'Build to fast over 20s, float, walk back. Relaxed face, tall hips.', dose: '6 × 20s' }]],
+    ['wed', 'WED', '03', 'Wednesday', 'Repeat sprints', 'Short run · shuttle sets with short rests',      '35–45 min', [35, 45], RUN_WARM_SPRINT, 'Drop a whole set before you shorten the rests.',
+      [{ name: 'Short run', dose: '15 min' },
+       { name: 'Multiple sprints', note: 'Shuttle style: 10m out, hard turn, 10m back, turn, 20m through. 45s walk between reps, 3 min between sets.', dose: '2 × (6 × 30s)' }]],
+    ['thu', 'THU', '04', 'Thursday',  'Easy',          'Short run · light strides',                      '25–30 min', [25, 30], RUN_WARM,        'Short on time — 15 min easy still counts.',
+      [{ name: 'Short run', note: 'Slower than feels necessary. This is recovery, not training.', dose: '20 min' },
+       { name: 'Strides', dose: '4 × 20s' }]],
+    ['fri', 'FRI', '05', 'Friday',    'Hill sprints',  'Short run · short, steep, hard',                 '35–45 min', [35, 45], RUN_WARM_SPRINT, 'Cut reps, keep the walk-down recoveries honest.',
+      [{ name: 'Short run', dose: '15 min' },
+       { name: 'Hill repeats', note: 'Short and steep: 20s all-out uphill, walk down, stand until recovered. Drive the knees, stay tall.', dose: '8 × 20s' }]],
+    ['sat', 'SAT', '06', 'Saturday',  'Top speed',     'Short run · 8 × 100m, full recoveries',          '35–45 min', [35, 45], RUN_WARM_SPRINT, 'Cut reps, not recoveries — a tired sprint teaches nothing.',
+      [{ name: 'Short run', dose: '15 min' },
+       { name: 'Sprints', note: 'Rolling start, all-out for 100m, walk back and stand until fully recovered. The last rep should look like the first.', dose: '8 × 100m · 2–3 min walk' }]],
+    ['sun', 'SUN', '07', 'Sunday',    'Easy',          'Longest short run of the week · light strides',  '35–40 min', [35, 40], RUN_WARM,        'Shorten the run; keep it easy.',
+      [{ name: 'Short run', note: 'Easy throughout — the one slightly longer run that keeps the base ticking.', dose: '25–30 min' },
+       { name: 'Strides', dose: '4 × 20s' }]],
+  ];
+  return spec.map(([id, short, num, name, focus, subtitle, time, target, warm, cut, main]) => ({
+    id, short, num, name, focus, subtitle, time, targetMin: target,
+    sections: [
+      { title: 'Warm-up', meta: 'jog in, open the hips', items: warm },
+      { title: 'Main run', meta: 'short run first, then the fast work', items: main },
+      { title: 'Cool-down', meta: 'walk, then hold and breathe', items: RUN_COOL },
+    ],
+    cut,
+  }));
+}
+
+export const RUN_SPEED = speedWeek();

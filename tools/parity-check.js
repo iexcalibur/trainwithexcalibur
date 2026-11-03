@@ -23,7 +23,7 @@ function loadPwa(file, names) {
 const pwaPlan = loadPwa('plan.js', ['PLAN']).PLAN;
 const pwaSak = loadPwa('sakshi-plan.js', ['SAKSHI_PLAN']).SAKSHI_PLAN;
 const pwaS2 = loadPwa('shubham2-plan.js', ['SHUBHAM2_PLAN']).SHUBHAM2_PLAN;
-const pwaRun = loadPwa('run-plan.js', ['RUN_TREADMILL', 'RUN_OUTDOOR']);
+const pwaRun = loadPwa('run-plan.js', ['RUN_TREADMILL', 'RUN_OUTDOOR', 'RUN_SPEED']);
 const pwaInfo = loadPwa('exinfo.js', ['MUSCLES', 'EXINFO', 'EQUIP', 'equipFor']);
 const pwaDemo = loadPwa('exdemo.js', ['DEMOS', 'VIDEOS', 'demoFor']);
 
@@ -75,6 +75,7 @@ comparePlans('SAKSHI', pwaSak, natSak);
 comparePlans('SHUBHAM2', pwaS2, natS2);
 comparePlans('RUN_TREADMILL', pwaRun.RUN_TREADMILL, natRun.RUN_TREADMILL);
 comparePlans('RUN_OUTDOOR', pwaRun.RUN_OUTDOOR, natRun.RUN_OUTDOOR);
+comparePlans('RUN_SPEED', pwaRun.RUN_SPEED, natRun.RUN_SPEED);
 compareMaps('MUSCLES', pwaInfo.MUSCLES, natInfo.MUSCLES);
 compareMaps('EXINFO', pwaInfo.EXINFO, natInfo.EXINFO);
 compareMaps('EQUIP', pwaInfo.EQUIP, natInfo.EQUIP);
@@ -83,7 +84,7 @@ compareMaps('EQUIP', pwaInfo.EQUIP, natInfo.EQUIP);
    over every name either app can ever render (plan items, EXINFO keys,
    and every clickable alternate). */
 const allNames = new Set();
-for (const plan of [pwaPlan, pwaSak, pwaS2, pwaRun.RUN_TREADMILL, pwaRun.RUN_OUTDOOR, natPlan, natSak, natS2, natRun.RUN_TREADMILL, natRun.RUN_OUTDOOR])
+for (const plan of [pwaPlan, pwaSak, pwaS2, pwaRun.RUN_TREADMILL, pwaRun.RUN_OUTDOOR, pwaRun.RUN_SPEED, natPlan, natSak, natS2, natRun.RUN_TREADMILL, natRun.RUN_OUTDOOR, natRun.RUN_SPEED])
   for (const d of plan) for (const s of d.sections) for (const it of s.items) allNames.add(it.name);
 for (const info of [pwaInfo.EXINFO, natInfo.EXINFO])
   for (const [k, v] of Object.entries(info)) { allNames.add(k); (v.alt ?? []).forEach(a => allNames.add(a)); }
@@ -98,7 +99,7 @@ if (untagged.length) diffs.push(`untagged exercises: ${untagged.join(' | ')}`);
 /* Every plan item must resolve in EXINFO (directly or via section-tag fallback is
    NOT enough for main content — flag items with no entry at all). */
 const noInfo = [];
-for (const [label, plan] of [['PLAN', pwaPlan], ['SAKSHI', pwaSak], ['SHUBHAM2', pwaS2], ['RUN_TREADMILL', pwaRun.RUN_TREADMILL], ['RUN_OUTDOOR', pwaRun.RUN_OUTDOOR]])
+for (const [label, plan] of [['PLAN', pwaPlan], ['SAKSHI', pwaSak], ['SHUBHAM2', pwaS2], ['RUN_TREADMILL', pwaRun.RUN_TREADMILL], ['RUN_OUTDOOR', pwaRun.RUN_OUTDOOR], ['RUN_SPEED', pwaRun.RUN_SPEED]])
   for (const d of plan) for (const s of d.sections) for (const it of s.items)
     if (!pwaInfo.EXINFO[it.name]) noInfo.push(`${label} ${d.id}/${s.title}: ${it.name}`);
 

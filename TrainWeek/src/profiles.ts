@@ -2,7 +2,7 @@ import { Day } from './data/plan';
 import { PLAN } from './data/plan';
 import { SAKSHI_PLAN } from './data/sakshi-plan';
 import { SHUBHAM2_PLAN } from './data/shubham2-plan';
-import { RUN_TREADMILL, RUN_OUTDOOR } from './data/run-plan';
+import { RUN_TREADMILL, RUN_OUTDOOR, RUN_SPEED } from './data/run-plan';
 
 export interface Rule {
   color: string;
@@ -87,8 +87,9 @@ export const PROFILES: Profile[] = [
     modes: [
       { key: 'treadmill', label: 'Treadmill', sub: 'Indoor · incline and speed cues' },
       { key: 'outdoor', label: 'Outdoor', sub: 'Road, track and hills' },
+      { key: 'speed', label: 'Speed', sub: 'Short runs + sprints, every day' },
     ],
-    plans: { treadmill: RUN_TREADMILL, outdoor: RUN_OUTDOOR },
+    plans: { treadmill: RUN_TREADMILL, outdoor: RUN_OUTDOOR, speed: RUN_SPEED },
     rules: [
       {
         color: '#1EE6A8',
