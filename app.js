@@ -39,13 +39,14 @@ const PROFILES = {
   },
   shubham2: {
     name: 'Shubham 2.0',
-    tagline: 'Upper-body frequency · chest, back, shoulders twice a week',
+    tagline: 'Upper-body frequency · daily abs · conditioning finisher',
     color: 'var(--blue)',
     plan: () => SHUBHAM2_PLAN,
     rules: [
       { color: 'var(--amber)', label: 'Hit it when it recovers', text: 'Chest, back and shoulders each get a heavy day and a volume day, never less than 48 hours apart — that is the whole idea. If a group is still sore on its second visit, drop the volume, not the session.' },
       { color: 'var(--green)', label: 'Abs every day', text: 'The ab machine opens every abs block, then the day\'s job: anti-extension, anti-rotation, obliques, lower abs, flexion. Short, honest sets — the core is trained by the week, not by one long session.' },
       { color: 'var(--blue)', label: 'Back-conscious, still', text: 'No legs here, but the spine rules stay: supported rows and presses, nothing that loads the low back in flexion. Nothing should send pain down a leg — if it does, stop that item.' },
+      { color: 'var(--purple)', label: 'Conditioning finisher', text: 'Ten to fifteen minutes at the end of every session so a gym week still moves the football goal: easy base on Monday and Thursday, sprints Tuesday, a steady run Wednesday, shuttle sprints Friday. Short on purpose — it is the lifting day, not a running day.' },
     ],
   },
   shubham3: {

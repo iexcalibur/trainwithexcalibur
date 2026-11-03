@@ -49,6 +49,7 @@ const SHUBHAM2_PLAN = [
           { name: 'Overhead dumbbell march', dose: '3 × 30s' },
         ],
       },
+      { title: 'Conditioning', meta: 'endurance base, 12 min', items: [{ name: 'Treadmill short run', note: '1% incline, talking pace. Just keeping the engine ticking.', dose: '10–12 min' }] },
       { title: 'Post-workout', meta: 'cool-down, hold and breathe', items: S2_COOL_PRESS },
     ],
     cut: 'Cut in this order: rope pushdown → chest dips. The two presses and the fly are the session.',
@@ -88,6 +89,7 @@ const SHUBHAM2_PLAN = [
           { name: 'Suitcase carry', note: 'One heavy DB; stay perfectly upright.', dose: '3 × 30–40m' },
         ],
       },
+      { title: 'Conditioning', meta: 'speed, 10 min', items: [{ name: 'Treadmill sprints', note: 'Straddle the rails, drop on, go. Fully recovered between reps.', dose: '6 × 20s · 90s walk' }] },
       {
         title: 'Post-workout', meta: 'cool-down, hold and breathe',
         items: [
@@ -135,6 +137,7 @@ const SHUBHAM2_PLAN = [
           { name: "Farmer's carry, two dumbbells", dose: '3 × 40m' },
         ],
       },
+      { title: 'Conditioning', meta: 'stamina, 15 min', items: [{ name: 'Treadmill endurance run', note: 'One speed, the pace you could hold for an hour.', dose: '12–15 min' }] },
       {
         title: 'Post-workout', meta: 'cool-down, hold and breathe',
         items: [
@@ -182,6 +185,7 @@ const SHUBHAM2_PLAN = [
           { name: 'Lying leg raise, dumbbell between the feet', dose: '3 × 10–12' },
         ],
       },
+      { title: 'Conditioning', meta: 'easy, 10 min', items: [{ name: 'Treadmill short run', note: 'Recovery pace. Slower than feels necessary.', dose: '10 min' }] },
       {
         title: 'Post-workout', meta: 'cool-down, hold and breathe',
         items: [
@@ -229,6 +233,7 @@ const SHUBHAM2_PLAN = [
           { name: 'Hollow hold or plank to finish', dose: '3 × 30–45s' },
         ],
       },
+      { title: 'Conditioning', meta: 'football stamina, 12 min', items: [{ name: 'Shuttle sprints, 5-10-5', note: 'Sprint 5m, turn, 10m back, turn, 5m through. Hard turns are what football costs.', dose: '2 × (6 reps · 45s walk)' }] },
       {
         title: 'Post-workout', meta: 'cool-down, hold and breathe',
         items: [

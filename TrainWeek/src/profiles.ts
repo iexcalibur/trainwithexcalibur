@@ -52,7 +52,7 @@ export const PROFILES: Profile[] = [
   {
     id: 'shubham2',
     name: 'Shubham 2.0',
-    tagline: 'Upper-body frequency · chest, back, shoulders twice a week',
+    tagline: 'Upper-body frequency · daily abs · conditioning finisher',
     color: '#4AA8FF',
     plan: SHUBHAM2_PLAN,
     rules: [
@@ -70,6 +70,11 @@ export const PROFILES: Profile[] = [
         color: '#4AA8FF',
         label: 'Back-conscious, still',
         text: 'No legs here, but the spine rules stay: supported rows and presses, nothing that loads the low back in flexion. Nothing should send pain down a leg — if it does, stop that item.',
+      },
+      {
+        color: '#B48CFF',
+        label: 'Conditioning finisher',
+        text: 'Ten to fifteen minutes at the end of every session so a gym week still moves the football goal: easy base on Monday and Thursday, sprints Tuesday, a steady run Wednesday, shuttle sprints Friday. Short on purpose — it is the lifting day, not a running day.',
       },
     ],
   },

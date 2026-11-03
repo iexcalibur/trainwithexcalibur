@@ -137,6 +137,7 @@ export const EXINFO: Record<string, ExInfo> = {
   'Foam roll lats, quads, calves': { m: ['lats', 'quads', 'calves'], alt: ['Massage-gun pass, light', 'Stick roller', 'Lacrosse-ball targeted spots'] },
 
   /* ---------------- Shubham 3.0 · running ---------------- */
+  'Shuttle sprints, 5-10-5': { m: ['cardio', 'calves', 'hamstrings', 'quads', 'glutes', 'elastic', 'balance'], alt: ['Multiple sprints', 'Skater hops, side to side', 'Lateral line hops, small and quick'] },
   'Build-up runs': { m: ['cardio', 'calves', 'hamstrings', 'quads', 'glutes', 'elastic'], alt: ['Strides', 'A-skips · high knees · butt kicks', 'Treadmill strides'] },
   'Short run': { m: ['cardio', 'calves', 'hamstrings', 'quads', 'glutes'], alt: ['Treadmill short run', 'Easy run', 'Recovery jog'] },
   'Sprints': { m: ['cardio', 'calves', 'hamstrings', 'quads', 'glutes', 'elastic'], alt: ['Treadmill sprints', 'Hill repeats', 'Track or road intervals'] },
@@ -250,6 +251,7 @@ export const EQUIP: Record<string, string> = {
 /* Exercise → equipment needed (minimal viable set; see EQUIP above). */
 const EXEQUIP: Record<string, string[]> = {
   'Arnold press': ['dumbbell', 'bench'],
+  'Shuttle sprints, 5-10-5': ['bodyweight'],
   'Build-up runs': ['bodyweight'],
   'Short run': ['bodyweight'],
   'Sprints': ['bodyweight'],

@@ -47,9 +47,9 @@ function runWeek(main) {
 const RUN_OUTDOOR = runWeek({
   mon: [{ name: 'Short run', note: 'You should be able to talk in full sentences the whole way.', dose: '20–30 min' }],
   tue: [{ name: 'Sprints', note: 'All-out from a rolling start; walk back and stand until you are fully recovered. Quality over quantity.', dose: '8 × 100m · 2–3 min walk' }],
-  wed: [{ name: 'Endurance run', note: 'Steady and even — the pace you could hold for an hour. No surges.', dose: '40–50 min' }],
+  wed: [{ name: 'Endurance run', note: 'Steady and even — the pace you could hold for an hour. Every other week make it a fartlek: 30s hard / 90s easy inside the same run, match rhythm.', dose: '40–50 min' }],
   thu: [{ name: 'Short run', note: 'Slower than feels necessary. This is recovery, not training.', dose: '20–25 min' }],
-  fri: [{ name: 'Multiple sprints', note: '3 sets of 6 × 30s hard with 45s walk between reps, 3 min between sets. Repeatability is the goal — the last rep should look like the first.', dose: '3 × (6 × 30s)' }],
+  fri: [{ name: 'Multiple sprints', note: 'Shuttle style: 10m out, hard turn, 10m back, turn, 20m through — about 30s. 45s walk between reps, 3 min between sets. The turns are the football part; the last rep should look like the first.', dose: '3 × (6 × 30s)' }],
   sat: [{ name: 'Short run', dose: '25–30 min' }],
   sun: [{ name: 'Long run', note: 'Easy pace throughout. Add 5 minutes a week; every 4th week drop back.', dose: '60–75 min' }],
 });
@@ -57,7 +57,7 @@ const RUN_OUTDOOR = runWeek({
 const RUN_TREADMILL = runWeek({
   mon: [{ name: 'Treadmill short run', note: '1% incline to match the road. Talk-test pace the whole way.', dose: '20–30 min' }],
   tue: [{ name: 'Treadmill sprints', note: 'Belt to a hard speed, straddle the rails, drop on and go. Step off and stand until fully recovered.', dose: '8 × 20s · 2–3 min walk' }],
-  wed: [{ name: 'Treadmill endurance run', note: '1% incline, one speed for the whole run — the pace you could hold for an hour.', dose: '40–50 min' }],
+  wed: [{ name: 'Treadmill endurance run', note: '1% incline, one speed for the whole run — the pace you could hold for an hour. Every other week make it a fartlek: 30s fast / 90s easy inside the same run.', dose: '40–50 min' }],
   thu: [{ name: 'Treadmill short run', note: '0–1% incline, slower than feels necessary. This is recovery, not training.', dose: '20–25 min' }],
   fri: [{ name: 'Treadmill multiple sprints', note: '3 sets of 6 × 30s hard with 45s walk between reps, 3 min between sets. Same speed every rep.', dose: '3 × (6 × 30s)' }],
   sat: [{ name: 'Treadmill short run', dose: '25–30 min' }],
