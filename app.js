@@ -39,14 +39,15 @@ const PROFILES = {
   },
   shubham2: {
     name: 'Shubham 2.0',
-    tagline: 'Push / pull every 48 hours · daily abs · conditioning finisher',
+    tagline: 'Push / pull every 48 hours · 6 days · barbell anchors · daily dips + abs',
     color: 'var(--blue)',
     plan: () => SHUBHAM2_PLAN,
     rules: [
-      { color: 'var(--amber)', label: 'Hit it when it recovers', text: 'Push, pull, push, pull, push: chest and shoulders Monday, Wednesday, Friday; back Tuesday and Thursday. Every group comes back exactly 48 hours later. Monday and Tuesday are heavy, the rest is volume, and Friday stays a touch lighter so Monday is fresh. If a group is still sore when its day comes round, drop the volume, not the session.' },
-      { color: 'var(--green)', label: 'Abs every day', text: 'The ab machine opens every abs block, then the day\'s job: anti-extension, anti-rotation, obliques, lower abs, flexion. Short, honest sets — the core is trained by the week, not by one long session.' },
+      { color: 'var(--green)', label: 'Add weight, not exercises', text: 'The plan only works if the numbers climb. Hit the top of the rep range on every set of a lift, then add the smallest load next time; if you cannot, repeat the weight and try again. Log every top set. The barbell bench on Monday and the barbell row on Tuesday are the anchors — those two numbers are what a month of 2.0 should move.' },
+      { color: 'var(--amber)', label: 'Hit it when it recovers', text: 'Push, pull, push, pull, push, pull: chest and shoulders Monday, Wednesday, Friday; back Tuesday, Thursday, Saturday. Every group comes back exactly 48 hours later and gets three sessions a week. Monday and Tuesday are heavy, Wednesday and Thursday are volume, Friday and Saturday stay a touch lighter so the heavy days are fresh. If a group is still sore when its day comes round, drop the volume, not the session.' },
+      { color: 'var(--green)', label: 'Dips and abs every day', text: 'Dips are their own block every day, lower chest, never to failure: three short sets on push days, two on pull days so chest still gets its 48 hours. Monday to Friday the ab machine opens every abs block, then the day\'s job: anti-extension, anti-rotation, obliques, lower abs, flexion. Saturday has none — five days is the dose. Short, honest sets; the core is trained by the week, not by one long session.' },
       { color: 'var(--blue)', label: 'Back-conscious, still', text: 'No legs here, but the spine rules stay: supported rows and presses, nothing that loads the low back in flexion. Nothing should send pain down a leg — if it does, stop that item.' },
-      { color: 'var(--purple)', label: 'Conditioning finisher', text: 'Ten to fifteen minutes at the end of every session so a gym week still moves the football goal: easy base on Monday and Thursday, sprints Tuesday, a steady run Wednesday, shuttle sprints Friday. Short on purpose — it is the lifting day, not a running day.' },
+      { color: 'var(--purple)', label: 'Conditioning finisher', text: 'Ten to fifteen minutes at the end of every session so a gym week still moves the football goal: easy base on Monday and Thursday, sprints Tuesday, a steady run Wednesday, shuttle sprints Friday, a walk-jog flush Saturday. Short on purpose — it is the lifting day, not a running day.' },
     ],
   },
   shubham3: {
